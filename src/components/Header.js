@@ -17,11 +17,11 @@ const Header = (props) => {
                 styles={styles.HeaderButton}
                 onPress={() => props.navigation.navigate('Login')}
             />
-            <ImageButton
+            {/* <ImageButton
                 image={iconList[1]}
                 styles={styles.HeaderButton}
                 onPress={() => props.navigation.navigate('Login')}
-            />
+            /> */}
             <ImageButton
                 image={iconList[2]}
                 styles={[styles.HeaderButton,{position: 'absolute', top:10, right: 10}]}

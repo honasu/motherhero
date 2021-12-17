@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderPopup from '../components/HeaderPopup'
+import HeaderMenu from '../components/HeaderMenu'
 import Accordion from 'react-native-collapsible/Accordion';
 
 const BabyCategory = ({navigation}) => {
@@ -135,7 +135,7 @@ const BabyCategory = ({navigation}) => {
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderPopup navigation={navigation} title="육아 정보"/>
+                <HeaderMenu navigation={navigation} title="육아 정보"/>
                 {babyList ? appendBabyList() : <View></View>}
             </View>
         </SafeAreaView>
