@@ -18,6 +18,7 @@ import Diet from './navigation/Diet';
 import Login from './navigation/Login';
 import Join from './navigation/Join';
 import Search from './navigation/Search';
+import BabyCategory from './navigation/BabyCategory';
 import BabyInfo from './navigation/BabyInfo';
 import SwiperComponent from './navigation/SwiperComponent';
 
@@ -27,6 +28,7 @@ function MyStack() {
       <Stack.Screen name="Login" component={Login} options={{ title: '로그인', headerShown: false }}/>
       <Stack.Screen name="Main" component={Main} options={{ title: '메인', headerShown: false }}/>
       <Stack.Screen name="Push" component={Push} options={{ title: '알림확인', headerShown: false }}/>
+      <Stack.Screen name="BabyCategory" component={BabyCategory} options={{ title: '육아정보카테고리', headerShown: false }}/>
       <Stack.Screen name="BabyInfo" component={BabyInfo} options={{ title: '육아정보', headerShown: false }}/>
       <Stack.Screen name="Diet" component={Diet} options={{ title: '식단안내'}}/>
       <Stack.Screen name="Join" component={Join} options={{ title: '회원가입', headerShown: false }}/>
