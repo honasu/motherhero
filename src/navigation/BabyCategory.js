@@ -12,7 +12,6 @@ const BabyCategory = ({navigation}) => {
 
     useEffect(() => {
         babyList ? '' : getBabyList();
-        console.log(babyList)
     }, [babyList])
 
     const setMoveButton = (data) => {
@@ -23,7 +22,8 @@ const BabyCategory = ({navigation}) => {
                     activeOpacity={0.8} 
                     style={styles.applyButton} 
                     onPress={ () => navigation.navigate('BabyInfo', {
-                        type: data[num].type
+                        type: data[num].type,
+                        text: data[num].text.split(' ')[1],
                     })}
                 >
                     <Text style={styles.applyText}>
@@ -55,19 +55,19 @@ const BabyCategory = ({navigation}) => {
             }],
             [{
                 text: '・ 이',
-                type: 'a'
+                type: 'd'
             },],
             [{
                 text: '・ 삼',
-                type: 'a'
+                type: 'e'
             },],
             [{
                 text: '・ 사',
-                type: 'a'
+                type: 'f'
             },],
             [{
                 text: '・ 오',
-                type: 'a'
+                type: 'g'
             },],
         ]
         setBabyList([

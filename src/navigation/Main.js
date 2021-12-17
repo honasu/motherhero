@@ -38,7 +38,7 @@ const Main = ({ navigation }) => {
     ];
     let mainContentText = [
         {
-            page: 'BabyInfo',
+            page: 'BabyCategory',
             text: '육아정보',
             img: require('../assets/images/cat1.jpeg')
         },

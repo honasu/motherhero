@@ -2,141 +2,82 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderPopup from '../components/HeaderPopup'
-import Accordion from 'react-native-collapsible/Accordion';
 
-const BabyCategory = ({navigation}) => {
+import HeaderSub from '../components/HeaderSub';
+import Selector from '../components/Selector';
 
-    const [babyList, setBabyList] = useState();
+const BabyInfo = ({route, navigation}) => {
+
+    const [headerInfo, setHeaderInfo] = useState(route.params); //type, text
+    const [selectorList, setSelectorList] = useState();
+    const [selectItem, setSelectItem] = useState();
+    const [urlList, setUrlList] = useState();
     const [activeSections, setActiveSections] = useState([]);
 
     useEffect(() => {
-        babyList ? '' : getBabyList();
-        console.log(babyList)
-    }, [babyList])
+        selectorList ? '' : getSelectorList();
+    }, [selectorList, headerInfo, selectItem])
 
-    const setMoveButton = (data) => {
-        const result = []
-        for(let num in data) {
-            result.push(
-                <TouchableOpacity 
-                    activeOpacity={0.8} 
-                    style={styles.applyButton} 
-                    onPress={ () => navigation.navigate('BabyInfo', {
-                        type: data[num].type
-                    })}
-                >
-                    <Text style={styles.applyText}>
-                        {data[num].text}
-                    </Text>
-                </TouchableOpacity>
-            )
-        }
-        return (
-        <View>
-            {result}
-        </View>
-        );
-    };
-
-    const getBabyList = () => {
-        const data = [
-            [{
-                text: '・ 심',
-                type: 'a'
-            },
-            {
-                text: '・ 심',
-                type: 'b'
-            },
-            {
-                text: '・ 해',
-                type: 'c'
-            }],
-            [{
-                text: '・ 이',
-                type: 'a'
-            },],
-            [{
-                text: '・ 삼',
-                type: 'a'
-            },],
-            [{
-                text: '・ 사',
-                type: 'a'
-            },],
-            [{
-                text: '・ 오',
-                type: 'a'
-            },],
-        ]
-        setBabyList([
-            {
-                index : 0,
-                title : "임신",
-                description : setMoveButton(data[0])
-            },
-            {
-                index : 1,
-                title : "태교",
-                description : setMoveButton(data[1])
-            },
-            {
-                index : 2,
-                title : "출산준비",
-                description : setMoveButton(data[2])
-            },
-            {
-                index : 3,
-                title : "산후조리",
-                description : setMoveButton(data[3])
-            },
-            {
-                index : 4,
-                title : "시설 입소 정보",
-                description : setMoveButton(data[4])
-            }  
-        ]);
+    const getSelectorList = () => {
+        //todo axios, headerInfo.type
+        const data = [{
+            name: '1a',
+            url:'1asdf'
+        }, 
+        {
+            name: '2b',
+            url:'2asdf'
+        }, 
+        {
+            name: '3c',
+            url:'3asdf'
+        }, 
+        {
+            name: '4d',
+            url:'4asdf'
+        }, 
+        {
+            name: '5e',
+            url:'5asdf'
+        }];
+        const name = data.map(value => value.name);
+        const url = data.map(value => value.url);
+        setSelectorList(name);
+        setUrlList(url);
+        setSelectItem(0);
     }
 
-    const renderHeader = (section) => {
-        return (
-        <View style={[styles.Header, styles.Row, (parseInt(section.index) == parseInt(activeSections)?styles.ActiveHeader:"")]}>
-            <Text style={styles.headerText}>{section.title}</Text>
-            <Image style={[styles.HeaderArrow,(parseInt(section.index) == parseInt(activeSections)?{right:12}:"")]} source={(parseInt(section.index) == parseInt(activeSections)?require('./../assets/images/icon/up-arrow.png'):require('./../assets/images/icon/down-arrow.png'))}/>
-        </View>
-        );
+    const appendWebView = () => {
+        console.log('appendWebView');
+        console.log(urlList[selectItem]);
+        //todo WebView
+        
     }
 
-    const renderContent = (section) => {
+    const appendSelector = () => {
         return (
-        <View style={[styles.Item,(parseInt(section.index) == parseInt(activeSections)?{borderBottomWidth:1,borderBottomColor:'#9e9e9e'}:{borderBottomWidth:0})]}>
-            <View>
-                <Text>{section.description}</Text>
+            <View style={styles.selectorView}>
+                <Selector
+                    data={selectorList}
+                    defaultValueByIndex="0"
+                    onSelect={(value) => {setSelectItem(value)}}
+                    SelectAreaStyle={styles.SelectAreaStyle}
+                />
             </View>
-        </View>
-        );
-    }
-
-    const appendBabyList = () => {
-        return (
-        <ScrollView style={styles.Content}>
-            <Accordion
-                sections={babyList}
-                activeSections={activeSections}
-                renderHeader={renderHeader}
-                renderContent={renderContent}
-                onChange={setActiveSections}
-            />
-        </ScrollView>
+            
         );
     }
 
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderPopup navigation={navigation} title="육아 정보"/>
-                {babyList ? appendBabyList() : <View></View>}
+                <HeaderSub
+                    page='normal'
+                    navigation={navigation}
+                    title={headerInfo ? headerInfo.text : ''}
+                />
+                {selectorList ? appendSelector() : <View></View>}
+                {urlList ? appendWebView() : <View></View>}
             </View>
         </SafeAreaView>
     );
@@ -195,6 +136,20 @@ const styles = StyleSheet.create({
         paddingRight:20,
         backgroundColor: 'white',
     },
+    selectorView: {
+        marginTop: 50,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingRight: 20,
+        paddingLeft: 20,
+        backgroundColor: 'lightgreen',
+    },
+    SelectAreaStyle: {
+        // flex: 1,
+        backgroundColor: 'white',
+        width: '100%',
+        height: 30,
+    }
 });
 
-export default BabyCategory;
+export default BabyInfo;
