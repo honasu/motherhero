@@ -28,7 +28,11 @@ const Join = ({ navigation }) => {
             isChecked2: false,
         });
         if(page == 3) {
-            navigation.navigate('Login')
+            navigation.reset({
+                routes: [{
+                    name: 'Login'
+                }]
+            })
             return ;
         }
         else {

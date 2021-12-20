@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
 
 import HeaderSub from '../components/HeaderSub';
 import Selector from '../components/Selector';
@@ -51,6 +52,8 @@ const BabyInfo = ({route, navigation}) => {
         console.log('appendWebView');
         console.log(urlList[selectItem]);
         //todo WebView
+
+        // <WebView source={{ uri: 'https://dorm.pusan.ac.kr/dorm/function/mealPlan/20000403' }} />
         
     }
 

@@ -43,7 +43,7 @@ const Main = ({ navigation }) => {
             img: require('../assets/images/cat1.jpeg')
         },
         {
-            page: 'Login',
+            page: 'ServiceInfoCategory',
             text: '지원서비스\n정보',
             img: require('../assets/images/cat2.jpeg')
         },

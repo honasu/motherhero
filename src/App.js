@@ -14,26 +14,28 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Main from './navigation/Main';
 import Push from './navigation/Push';
-import Diet from './navigation/Diet';
 import Login from './navigation/Login';
 import Join from './navigation/Join';
-import Search from './navigation/Search';
 import BabyCategory from './navigation/BabyCategory';
 import BabyInfo from './navigation/BabyInfo';
-import SwiperComponent from './navigation/SwiperComponent';
+import ServiceInfoCategory from './navigation/ServiceInfoCategory';
+import ServiceInfoList from './navigation/ServiceInfoList';
+import ServiceDetail from './navigation/ServiceDetail';
+import ServiceApply from './navigation/ServiceApply';
 
 function MyStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Login" component={Login} options={{ title: '로그인', headerShown: false }}/>
+      <Stack.Screen name="Join" component={Join} options={{ title: '회원가입', headerShown: false }}/>
       <Stack.Screen name="Main" component={Main} options={{ title: '메인', headerShown: false }}/>
       <Stack.Screen name="Push" component={Push} options={{ title: '알림확인', headerShown: false }}/>
       <Stack.Screen name="BabyCategory" component={BabyCategory} options={{ title: '육아정보카테고리', headerShown: false }}/>
       <Stack.Screen name="BabyInfo" component={BabyInfo} options={{ title: '육아정보', headerShown: false }}/>
-      <Stack.Screen name="Diet" component={Diet} options={{ title: '식단안내'}}/>
-      <Stack.Screen name="Join" component={Join} options={{ title: '회원가입', headerShown: false }}/>
-      <Stack.Screen name="Search" component={Search} options={{ title: '계정찾기'}}/>
-      <Stack.Screen name="SwiperComponent" component={SwiperComponent} options={{ title: '배너테스트'}}/>
+      <Stack.Screen name="ServiceInfoCategory" component={ServiceInfoCategory} options={{ title: '지원서비스정보카테고리', headerShown: false }}/>
+      <Stack.Screen name="ServiceInfoList" component={ServiceInfoList} options={{ title: '지원서비스정보리스트', headerShown: false }}/>
+      <Stack.Screen name="ServiceDetail" component={ServiceDetail} options={{ title: '지원서비스정보상세', headerShown: false }}/>
+      <Stack.Screen name="ServiceApply" component={ServiceApply} options={{ title: '지원서비스정보상세', headerShown: false }}/>
     </Stack.Navigator>
   );
 }

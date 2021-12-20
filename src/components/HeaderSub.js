@@ -28,6 +28,11 @@ const HeaderSub = (props) => {
                 TextStyle={styles.SmallButtonText}
                 onPress={() => props.navigation.goBack()}
             />
+            <ImageButton
+                image={props.isOn ? require('./../assets/images/icon/favorite_on.png') : require('./../assets/images/icon/favorite_off.png')}
+                styles={[styles.FavorButton, (props.type=='favorite'?{display:'flex'}:{display:'none'})]}
+                onPress={() => props.navigation.goBack()}
+            />
         </View>
     );
 }
@@ -98,6 +103,16 @@ const styles = StyleSheet.create({
         lineHeight:18,
         fontWeight:'bold',
     },
+    FavorButton: {
+        width:30,
+        height:30,
+        paddingLeft:0,
+        paddingRight:0,
+        marginTop:10,
+        marginLeft:15,
+        position:'absolute',
+        right:15
+    }
 });
 
 export default HeaderSub;
