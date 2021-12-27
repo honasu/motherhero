@@ -4,10 +4,9 @@ import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Accordion from 'react-native-collapsible/Accordion';
 
-import QNACategory from '../components/QNA/QNACategory';
-import QNAList from '../components/QNA/QNAList';
-import QNADetail from '../components/QNA/QNADetail'
-import QNAChat from '../components/QNA/QNAChat'
+import ReviewCategory from '../components/Review/ReviewCategory';
+import ReviewList from '../components/Review/ReviewList';
+import ReviewDetail from '../components/Review/ReviewDetail'
 
 
 const Review = ({navigation}) => {
@@ -34,36 +33,25 @@ const Review = ({navigation}) => {
         switch(page) {
             case 1:
                 return (
-                    <QNACategory
+                    <ReviewCategory
                         navigation={navigation}
                         onPress={data => onPress(data)}
                     />
                 )
                 break;
             case 2:
-                if(selectCategory == '질문 게시판') {
-                    return (
-                        <QNAList
-                            pageName={selectCategory}
-                            navigation={navigation}
-                            onPress={data => onPress(data)}
-                            onPrev={() => onPrev()}
-                        />
-                    )
-                }
-                else {
-                    return (
-                        <QNAChat
-                            pageName={selectCategory}
-                            navigation={navigation}
-                            onPrev={() => onPrev()}
-                        />
-                    )   
-                }
+                return (
+                    <ReviewList
+                        pageName={selectCategory}
+                        navigation={navigation}
+                        onPress={data => onPress(data)}
+                        onPrev={() => onPrev()}
+                    />
+                )
                 break;
             case 3:
                 return (
-                    <QNADetail
+                    <ReviewDetail
                         data={selectDetail}
                         navigation={navigation}
                         onPrev={() => onPrev()}
