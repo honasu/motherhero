@@ -10,7 +10,7 @@ import QNADetail from '../components/QNA/QNADetail'
 import QNAChat from '../components/QNA/QNAChat'
 
 
-const QNA = ({navigation}) => {
+const Review = ({navigation}) => {
 
     const [page, setPage] = useState(1);
     const [selectDetail, setSelectDetail] = useState();
@@ -23,22 +23,6 @@ const QNA = ({navigation}) => {
     const onPress = (data) => {
         setPage(page+1);
         if(data.category) {
-            // switch(data.category) {
-            //     case '질문 게시판':
-            //         break;
-            //     case 'KWS 지원사업 문의':
-            //         break;
-            //     case '시설입소 문의':
-            //         break;
-            //     case '입양 문의':
-            //         break;
-            //     case '법률상담':
-            //         break;
-            //     case '기타문의':
-            //         break;
-            //     default: 
-            //         break;
-            // }
             setSelectCategory(data.category);
         }
         if(data.detail) {
@@ -106,4 +90,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default QNA;
+export default Review;

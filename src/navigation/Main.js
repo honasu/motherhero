@@ -48,25 +48,25 @@ const Main = ({ navigation }) => {
             img: require('../assets/images/cat2.jpeg')
         },
         {
-            page: 'Login',
+            page: 'QNA',
             text: '전문가\nQ&A',
             img: require('../assets/images/cat3.jpeg')
         },
         {
-            page: 'Login',
+            page: 'Review',
             text: '지원 후기',
             img: require('../assets/images/cat4.jpeg')
+        },
+        {
+            page: 'Login',
+            text: '슬기로운\n엄마생활',
+            img: require('../assets/images/cat6.jpeg')
         },
         {
             page: 'Login',
             text: '대한\n사회복지회',
             img: require('../assets/images/cat5.jpeg')
         },
-        {
-            page: 'Login',
-            text: '슬기로운\n엄마생활',
-            img: require('../assets/images/cat6.jpeg')
-        }
     ]
     return (
         <SafeAreaView style={{flex:1, position:'relative', backgroundColor: '#fff'}}>
@@ -149,20 +149,17 @@ const Main = ({ navigation }) => {
                         <ListContentView 
                             title='공지사항1asdasdsadasdasdasdasdasdasdasdadas'
                             date='2021.12.06'
-                            navigation={navigation}
-                            movePage='Login'
+                            onPress={() => navigation.navigate('Login')}
                         />
                         <ListContentView 
                             title='공지사항2asdasdsadasdasdasdasdasdasdasdadas'
                             date='2021.12.06'
-                            navigation={navigation}
-                            movePage='Login'
+                            onPress={() => navigation.navigate('Login')}
                         />
                         <ListContentView 
                             title='공지사항3asdasdsadasdasdasdasdasdasdasdadas'
                             date='2021.12.06'
-                            navigation={navigation}
-                            movePage='Login'
+                            onPress={() => navigation.navigate('Login')}
                         />
                     </View>
                 </ScrollView>

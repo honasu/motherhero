@@ -22,6 +22,8 @@ import ServiceInfoCategory from './navigation/ServiceInfoCategory';
 import ServiceInfoList from './navigation/ServiceInfoList';
 import ServiceDetail from './navigation/ServiceDetail';
 import ServiceApply from './navigation/ServiceApply';
+import QNA from './navigation/QNA';
+import Review from './navigation/Review';
 
 function MyStack() {
   return (
@@ -35,7 +37,9 @@ function MyStack() {
       <Stack.Screen name="ServiceInfoCategory" component={ServiceInfoCategory} options={{ title: '지원서비스정보카테고리', headerShown: false }}/>
       <Stack.Screen name="ServiceInfoList" component={ServiceInfoList} options={{ title: '지원서비스정보리스트', headerShown: false }}/>
       <Stack.Screen name="ServiceDetail" component={ServiceDetail} options={{ title: '지원서비스정보상세', headerShown: false }}/>
-      <Stack.Screen name="ServiceApply" component={ServiceApply} options={{ title: '지원서비스정보상세', headerShown: false }}/>
+      <Stack.Screen name="ServiceApply" component={ServiceApply} options={{ title: '지원서비스지원', headerShown: false }}/>
+      <Stack.Screen name="QNA" component={QNA} options={{ title: 'QNA', headerShown: false }}/>
+      <Stack.Screen name="Review" component={Review} options={{ title: '지원후기', headerShown: false }}/>
     </Stack.Navigator>
   );
 }

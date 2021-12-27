@@ -9,7 +9,7 @@ const HeaderPopup = (props) => {
             <ImageButton
                 image={require('./../assets/images/icon/multifly.png')}
                 styles={styles.HeaderButton}
-                onPress={() => props.navigation.goBack()}
+                onPress={() => props.onPrev ? props.onPrev() : props.navigation.goBack()}
             />
             <Text style={styles.HeaderText}>{props.title}</Text>
         </View>

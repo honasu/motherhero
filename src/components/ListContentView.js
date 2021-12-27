@@ -1,22 +1,29 @@
 import React from 'react';
 import { Image, SafeAreaView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 
-const ListHeaderView = (props) => {
-    let movePage = props.movePage;
+const ListContentView = (props) => {
     let title = props.title;
     let date = props.date;
-    let navigation = props.navigation;
+    let onPress = props.onPress;
+    let buttonStyle = props.buttonStyle;
+    let textStyle = props.textStyle;
+    let dateStyle = props.dateStyle;
+
+    const appendDate = () => {
+        if(date) {
+            return (<Text style={[styles.moveText, dateStyle]}>
+                {date}
+            </Text>);
+        }
+    }
 
     return (
         <View style={styles.view}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.moveButton} onPress={ () => navigation.navigate(movePage) }>
-                <Text style={styles.title} numberOfLines={1}>
+            <TouchableOpacity activeOpacity={0.8} style={[styles.moveButton, buttonStyle]} onPress={ () => onPress() }>
+                <Text style={[styles.title, textStyle]} numberOfLines={1}>
                     {title}
                 </Text>
-                <Text style={styles.moveText}>
-                    {date}
-                </Text>
-                
+                {appendDate()}
             </TouchableOpacity>
         </View>
     );
@@ -49,5 +56,5 @@ const styles = StyleSheet.create({
 });
 
 
-export default ListHeaderView;
+export default ListContentView;
 

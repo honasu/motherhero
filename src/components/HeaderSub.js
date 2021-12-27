@@ -9,7 +9,7 @@ const HeaderSub = (props) => {
             <ImageButton
                 image={require('./../assets/images/icon/left-arrow.png')}
                 styles={styles.HeaderButton}
-                onPress={() => props.navigation.goBack()}
+                onPress={() => props.onPrev ? props.onPrev() : props.navigation.goBack()}
             />
             <Input
                 styles={[styles.BasicInput, (props.page=='search'?{display:'flex'}:{display:'none'})]}
