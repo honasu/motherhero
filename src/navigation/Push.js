@@ -27,24 +27,17 @@ const Push = ({navigation}) => {
         <ScrollView style={styles.pushListView}>
             {pushList.map((value, index) => (
                 <View style={styles.contentArea} key={index}>
-                    <View>
-                        <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
-                            <Text style={[styles.pushTitle, styles.pushText]}>
-                                {value.title}
-                            </Text>
-                            <Text style={[styles.pushDate]}>
-                                {parseDate(value.date)}
-                            </Text>
-                        </View>
-                        <Text style={[styles.pushDetail, styles.pushText]} numberOfLines={1}>
-                            {value.detail}
+                    <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                        <Text style={[styles.pushType]}>
+                            {value.type}
+                        </Text>
+                        <Text style={[styles.pushDate]}>
+                            {parseDate(value.date)}
                         </Text>
                     </View>
-                    <ImageButton
-                        image={require('./../assets/images/icon/multifly.png')}
-                        styles={styles.deleteButton}
-                        onPress={() => navigation.goBack()}
-                    />
+                    <Text style={[styles.pushTitle]} numberOfLines={1}>
+                        {value.title}
+                    </Text>
                 </View>
             ))}
         </ScrollView>
@@ -52,12 +45,45 @@ const Push = ({navigation}) => {
     }
 
     const getPushList = async () => {
-        const result = await axios({
-            url: 'http://localhost:3000/pushList',
-            method: 'get'
-        });
+        // const result = await axios({
+        //     url: 'http://localhost:3000/pushList',
+        //     method: 'get'
+        // });
         
-        setPushList(result.data)
+        const data = 
+        [{
+            type: '지자체 지원 서비스 안내',
+            date: '2021.12.17 10:21:32',
+            // title: '2021 하반기 ',
+            title: '2021 하반기 한부모가족동절기수당(난방비)지원 사업 안내',
+            page: '',
+        },
+        {
+            type: '지자체 지원 서비스 안내',
+            date: '2021.12.06 10:21:32',
+            title: '2021 하반기 ',
+            page: '',
+        },
+        {
+            type: '지자체 지원 서비스 안내',
+            date: '2021.12.06 10:21:32',
+            title: '2021 하반기 ',
+            page: '',
+        },
+        {
+            type: '지자체 지원 서비스 안내',
+            date: '2021.12.06 10:21:32',
+            title: '2021 하반기 ',
+            page: '',
+        },
+        {
+            type: '지자체 지원 서비스 안내',
+            date: '2021.12.06 10:21:32',
+            title: '2021 하반기 ',
+            page: '',
+        }];
+
+        setPushList(data)
     };
 
     useEffect(() => {
@@ -80,32 +106,44 @@ const Push = ({navigation}) => {
 
 const styles = StyleSheet.create({
     pushDate: {
-        width: 80,
-        fontSize:15,
-        height:20,
+        flex:1,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
         marginTop:2,
-        marginRight:30,
+        color:'#AAAAAA',
         textAlign: 'right',
     },
     pushListView: {
-        marginTop:60,
+        marginTop:70,
+        flex:1
     },
-    pushText:{
+    pushType: {
         flex:1,
-        fontSize:15,
-        height:20,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#AAAAAA',
+        marginTop:2,
+    },
+    pushTitle: {
+        width:'100%',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 15,
+        color:'#191919',
         marginTop:2,
     },
     contentArea:{
         marginTop:5,
-        flexDirection: "row",
         flexWrap: "wrap",
         flex:1,
-        height:45,
+        height:65,
+        padding: 7,
         paddingLeft:20,
         paddingRight:20,
         position:'relative',
-        borderBottomColor: 'lightgray',
+        borderBottomColor: '#DCDCDC',
         borderBottomWidth: 1,
     },
     deleteButton:{

@@ -20,9 +20,9 @@ const ServiceApplyContent = (props) => {
 
     const joinImg = () => {
         let result;
-        if(page == 1) result = (<Image source={require('./../assets/images/bannerCat1.jpeg')} style={styles.joinHeaderImg}/>);
-        if(page == 2) result = (<Image source={require('./../assets/images/bannerCat2.jpeg')} style={styles.joinHeaderImg}/>);
-        if(page == 3) result = (<Image source={require('./../assets/images/bannerCat3.jpeg')} style={styles.joinHeaderImg}/>);
+        if(page == 1) result = (<Image source={require('./../assets/images/icons/3tabs1.png')} style={styles.joinHeaderImg}/>);
+        if(page == 2) result = (<Image source={require('./../assets/images/icons/3tabs2.png')} style={styles.joinHeaderImg}/>);
+        if(page == 3) result = (<Image source={require('./../assets/images/icons/3tabs3.png')} style={styles.joinHeaderImg}/>);
         
         return result;
     }
@@ -30,10 +30,10 @@ const ServiceApplyContent = (props) => {
     const appendFileText = () => {
         return (
             <TouchableOpacity style={styles.inputFile} onPress={ () => {
-                setUploadFile({file:'file', name:'filePath'});
+                setUploadFile({file:'file', name:'asdsadsadsadsadasdsadsadasdsdasdasdasdasdsad'});
             }}>
-                <Text style={[styles.fileText, ( uploadFile ? styles.fileUploaded : styles.fileEmpty )]}>
-                    { uploadFile ? uploadFile.name : '업로드할 파일 선택' }
+                <Text style={[styles.fileText, ( uploadFile.file ? styles.fileUploaded : styles.fileEmpty )]}>
+                    { uploadFile.file ? uploadFile.name : '업로드할 파일 선택' }
                 </Text>
             </TouchableOpacity>
         );
@@ -59,15 +59,15 @@ const ServiceApplyContent = (props) => {
         }
 
         return (
-            <View>
+            <View style={{marginTop:20, width: 250}}>
                 {seconedPageInfo.map((value, index) => 
                     <View style={styles.fileListView}>                        
-                        <Text style={styles.fileListName} >{value}</Text>
+                        <Text style={styles.fileListName} numberOfLines={1}>{value}</Text>
                         <Button 
                             styles={styles.removeFileButton} 
                             onPress = { () => removeFile(index-1) }
                             title='삭제'
-                            TextStyle={styles.submitButtonText}
+                            TextStyle={styles.removeButtonText}
                         />
                     </View>
                 )}
@@ -83,7 +83,7 @@ const ServiceApplyContent = (props) => {
                 result = (
                     <View style={{alignItems: 'center', marginTop:30}}>
                         <ImageButton
-                            image={require('./../assets/images/icon/link-button.png')}
+                            image={require('./../assets/images/icons/link-button.png')}
                             ImageStyle={styles.googleFormButton}
                             styles={{height:200}}
                             onPress={() => Linking.openURL(googleForm)}
@@ -100,7 +100,7 @@ const ServiceApplyContent = (props) => {
                             {appendFileText()}
                             <Button 
                                 styles={styles.submitFileButton} 
-                                onPress = { () => addFile() }
+                                onPress = { () => {if(uploadFile.file) addFile() }}
                                 title='등록'
                                 TextStyle={styles.submitButtonText}
                             >
@@ -140,9 +140,17 @@ const ServiceApplyContent = (props) => {
 const styles = StyleSheet.create({
     fileListView: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop:10,
+        alignItems: 'center'
     },
     fileListName: {
-        
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 15,
+        color:'#191919',
+        flex: 1,
+        marginRight: 10        
     },
     removeFileButton: {
         width: 70,
@@ -153,20 +161,29 @@ const styles = StyleSheet.create({
         height: 40,
     },
     submitButtonText: {
-        fontWeight: '500',
-        lineHeight: 30,
-        fontSize: 15
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 16,
+        color:'#FFFFFF',
+    },
+    removeButtonText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 12,
+        color:'#FFFFFF',
     },
     fileText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
         fontSize: 15,
-        lineHeight: 30,
+        color:'#FFFFFF',
         flex: 1,
     },
     fileUploaded: {
-        color: 'black'
+        color: '#191919'
     },
     fileEmpty: {
-        color: 'gray'
+        color: '#AAAAAA'
     },
     seconedPageView: {
         marginTop:30, 
@@ -182,9 +199,10 @@ const styles = StyleSheet.create({
         paddingBottom: 7,
         paddingLeft: 14,
         paddingRight: 14,
-        color: 'black',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
         fontSize: 20,
-        fontWeight: '500'
+        color:'#191919',
     },
     joinProfileImg: {
         borderRadius:100, 
@@ -201,6 +219,9 @@ const styles = StyleSheet.create({
     },
     inputFileView: {
         flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
     },
     inputFile: {
         flex: 1,
@@ -213,28 +234,15 @@ const styles = StyleSheet.create({
         paddingLeft:15,
         borderColor:'#000000',
         borderRadius:5,
-        marginTop:10,
         flexDirection: 'row',
-    },
-    joinInput: {
-        height:30,
-        paddingTop:0,
-        paddingBottom:0,
+        alignItems: 'center'
     },
     joinHeaderImg: {
         height: 100,
-        width: 300,
-        marginTop: 20,
+        width: 250,
+        // marginTop: 20,
         alignSelf: 'center', 
-    },
-    joinHeaderText: {
-        paddingTop: 7,
-        paddingBottom: 7,
-        paddingLeft: 14,
-        paddingRight: 14,
-        color: 'black',
-        fontSize: 20,
-        fontWeight: '500'
+        resizeMode: 'contain'
     },
     StepHeaderTextArea:{
         width:200,

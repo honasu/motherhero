@@ -61,7 +61,7 @@ const ServiceInfoList = ({route, navigation}) => {
 
     const appendList = () => {
         return (
-            <ScrollView style={{marginTop:50}}>
+            <ScrollView style={{marginTop:70, width:'100%'}}>
                 {serviceList.map((value, index) => 
                     <TouchableOpacity style={styles.listContent} onPress={() => {navigation.navigate('ServiceDetail', {
                         ...headerInfo,
@@ -69,17 +69,17 @@ const ServiceInfoList = ({route, navigation}) => {
                         uid: value.uid,
                         googleForm: value.googleForm,
                     })}}>
-                        <Text style={styles.listTitle}>
-                            {value.title}
-                        </Text>
-                        <View style={styles.listWriteInfo}>
-                            <Text style={styles.listWriter}>
-                                {value.nicName}
+                            <Text style={styles.listTitle} numberOfLines={1}>
+                                {value.title}
                             </Text>
-                            <Text style={styles.listDate}>
-                                {parseDate(value.date)}
-                            </Text>
-                        </View>
+                            <View style={styles.listWriteInfo}>
+                                <Text style={styles.listWriter}>
+                                    {value.nicName}
+                                </Text>
+                                <Text style={styles.listDate}>
+                                    {parseDate(value.date)}
+                                </Text>
+                            </View>
                     </TouchableOpacity>
                 )}
             </ScrollView>
@@ -139,34 +139,49 @@ const styles = StyleSheet.create({
         borderBottomColor:'#9e9e9e'
     },
     listContent: {
-        borderBottomColor:'#9e9e9e',
-        borderBottomWidth:1,
-        paddingTop: 20,
-        paddingBottom: 15,
+        marginTop:5,
+        flexWrap: "wrap",
+        flex:1,
+        height:65,
+        padding: 7,
         paddingLeft:20,
         paddingRight:20,
-        backgroundColor: 'white',
-        width: '100%',
-        maxWidth: 1024
+        position:'relative',
+        borderBottomColor: '#DCDCDC',
+        borderBottomWidth: 1,
     },
     ContentView: {
         flex: 1
     },
     listTitle: {
-        fontSize: 17,
-        fontWeight: '700',
-        marginBottom: 7
+        flex:1,
+        width:'100%',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 15,
+        color:'#191919',
+        marginTop:2,
     },
     listWriteInfo: {
         flexDirection: 'row',
-        position: 'relative',
+        justifyContent:'space-between',
     },
     listWriter: {
-        color: 'gray'
+        flex:1,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#AAAAAA',
+        marginTop:2,
     },
     listDate: {
-        position: 'absolute',
-        right:0
+        flex:1,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        marginTop:2,
+        color:'#AAAAAA',
+        textAlign: 'right',
     }
 });
 

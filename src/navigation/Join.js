@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import JoinContent from './../components/JoinContent';
 
@@ -67,45 +68,47 @@ const Join = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{flex:1}}>
-            <View style={{ flex: 1, alignItems: 'center', marginTop:100}}>
-                <View style={styles.joinHeaderWarpper}>
-                    <Text style={styles.joinHeaderText}>
-                        회원가입
-                    </Text>
-                </View>
-
-                <JoinContent page={page} isChecked={firstPageInfo}
-                seconedPageInfo={seconedPageInfo} thirdPageInfo={thirdPageInfo}
-                onChange={(data) => onChange(data) }/>
-
-                <View style={styles.submitButtonView}>
-                    <TouchableOpacity 
-                        activeOpacity={0.8} 
-                        style={styles.submitButton} 
-                        onPress = { () => nextPage() }
-                    >
-                        <Text style={styles.submitButtonText}>
-                            { page == 3 ? '회원 가입' : '다음' }
+            <KeyboardAwareScrollView style={{flex:1}}>
+                <View style={{ flex: 1, alignItems: 'center', marginTop:100}}>
+                    <View style={styles.joinHeaderWarpper}>
+                        <Text style={styles.joinHeaderText}>
+                            회원가입
                         </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                        activeOpacity={0.8} 
-                        style={[styles.submitButton, page == 1 ? {display:'none'} : {display: 'flex', marginLeft: 10}]}
-                        onPress = { () => prevPage() }
-                    >
-                        <Text style={styles.submitButtonText}>
-                            이전
-                        </Text>
-                    </TouchableOpacity>
+                    </View>
+
+                    <JoinContent page={page} isChecked={firstPageInfo}
+                    seconedPageInfo={seconedPageInfo} thirdPageInfo={thirdPageInfo}
+                    onChange={(data) => onChange(data) }/>
+
+                    <View style={styles.submitButtonView}>
+                        <TouchableOpacity 
+                            activeOpacity={0.8} 
+                            style={styles.submitButton} 
+                            onPress = { () => nextPage() }
+                        >
+                            <Text style={styles.submitButtonText}>
+                                { page == 3 ? '회원 가입' : '다음' }
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            activeOpacity={0.8} 
+                            style={[styles.submitButton, page == 1 ? {display:'none'} : {display: 'flex', marginLeft: 10}]}
+                            onPress = { () => prevPage() }
+                        >
+                            <Text style={styles.submitButtonText}>
+                                이전
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     joinHeaderWarpper: {
-        borderColor: 'black',
+        borderColor: '#92D14F',
         borderBottomWidth: 2,
     },
     joinHeaderText: {
@@ -113,12 +116,13 @@ const styles = StyleSheet.create({
         paddingBottom: 7,
         paddingLeft: 14,
         paddingRight: 14,
-        color: 'black',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
         fontSize: 20,
-        fontWeight: '500'
+        color:'#191919',
     },
     submitButtonView: {
-        width: 300,
+        width: 270,
         flexDirection: 'row', 
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
       marginTop: 20,
       padding:10,
       borderRadius: 10,
-      backgroundColor: '#47C83E',
+      backgroundColor: '#92D14F',
       borderWidth: 0,
       flex: 1,
       alignItems: 'center',

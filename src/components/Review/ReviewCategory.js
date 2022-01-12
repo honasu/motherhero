@@ -8,29 +8,30 @@ import HeaderMenu from './../HeaderMenu';
 import ListContentView from './../ListContentView';
 
 
-const ReviewCategory = (props) => {
-
-    const onPress = props.onPress;
-    const navigation = props.navigation;
+const ReviewCategory = ({navigation}) => {
 
     return (
-        <SafeAreaView  style={styles.SafeAreaView}>
+        <View>
             <HeaderMenu navigation={navigation} title="지원후기"/>
             <View style={styles.ContentView}>
                 <ListContentView
                     textStyle={styles.listContentText}
                     buttonStyle={styles.listContentButton}
                     title='지원 후기 게시판'
-                    onPress={() => onPress({category: '지원 후기'})}
+                    onPress={() => navigation.navigate('ReviewList', {
+                        pageName:'지원 후기',
+                    })}
                 />
                 <ListContentView
                     textStyle={styles.listContentText}
                     buttonStyle={styles.listContentButton}
                     title='APP 사용 후기 게시판'
-                    onPress={() => onPress({category: 'APP 사용 후기'})}
+                    onPress={() => navigation.navigate('ReviewList', {
+                        pageName:'APP 사용 후기',
+                    })}
                 />
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -42,10 +43,15 @@ const styles = StyleSheet.create({
     },
     ContentView:{
         position:'relative',
-        height:'100%'
+        height:'100%',
+        marginTop:70
     },
     listContentText: {
-        fontWeight: '700'
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        color: '#191919',
+        fontSize: 15,
+        paddingLeft: 12
     },
     listContentButton: {
         padding:10

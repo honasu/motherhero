@@ -21,31 +21,25 @@ const MainContentBox = (props) => {
 
 const styles = StyleSheet.create({
     contentImg: {
-        width: 80,
-        height: 80,
+        width: 65,
+        height: 65,
         resizeMode: 'contain',
     },
     contentText: {
-        marginTop: 10,
-        fontSize: 13,
-        fontWeight: "bold",
-        textAlign:'center'
+        marginTop: 0,
+        fontSize: 14,
+        textAlign:'center',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Medium',
+        color: '#191919'
     },
     contentView: {
-        backgroundColor: '#fff',
-        // borderColor: '#3143e8',
         flex: 1,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
-        borderBottomLeftRadius: 9,
-        borderBottomRightRadius: 9,
         padding: 2,
-        // flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',      
+        justifyContent: 'flex-start',      
     },
     contentButton: {
-        // alignItems:'center',
         flex: 1,
         margin:8,
     },

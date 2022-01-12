@@ -7,8 +7,8 @@ const HeaderPopup = (props) => {
     return (
         <View style={[styles.View, styles.Shadow]}>
             <ImageButton
-                image={require('./../assets/images/icon/multifly.png')}
-                styles={styles.HeaderButton}
+                image={require('./../assets/images/icons/x.png')}
+                styles={[styles.HeaderButton]}
                 onPress={() => props.onPrev ? props.onPrev() : props.navigation.goBack()}
             />
             <Text style={styles.HeaderText}>{props.title}</Text>
@@ -19,7 +19,7 @@ const HeaderPopup = (props) => {
 const styles = StyleSheet.create({
   View:{
     width:'100%',
-    height:50,
+    height:70,
     paddingTop:10,
     paddingBottom:10,
     paddingLeft:10,
@@ -28,8 +28,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     position:'absolute',
     top:0,
-    backgroundColor:'#47C83E',
-    zIndex:5
+    backgroundColor:'#92D14F',
+    zIndex:5,
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   Shadow:{
     shadowColor: "#000",
@@ -42,23 +45,20 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   HeaderText:{
-    position:'absolute',
-    width: Dimensions.get('window').width - 100,
-    height:'100%',
-    textAlign:'center',
-    fontSize:20,
-    top:10,
-    left:55,
-    lineHeight:30,
+    includeFontPadding:false,
+    fontFamily:'NotoSansKR-Regular',
+    fontSize: 22,
     color:'white',
+    marginRight:10
   },
   HeaderButton:{
-    width:30,
-    height:30,
+    width:26,
+    height:26,
     paddingLeft:0,
     paddingRight:0,
-    marginLeft:5,
-  }
+    position: 'absolute',
+    left: 20,
+  },
 });
 
 export default HeaderPopup;

@@ -33,7 +33,7 @@ const ServiceApply = ({ route, navigation }) => {
         if(page == 3) {
             navigation.reset({
                 routes: [{
-                    name: 'Login'
+                    name: 'Main'
                 }]
             })
             return ;
@@ -62,7 +62,7 @@ const ServiceApply = ({ route, navigation }) => {
             return '첨부서류 등록'
         }
         if(page == 3) {
-            '완료'
+            return '완료'
         }
     }
 
@@ -74,7 +74,7 @@ const ServiceApply = ({ route, navigation }) => {
                     title={headerInfo ? headerInfo.text : ''}
                 />
             </View>
-            <View style={{ flex: 1, alignItems: 'center', marginTop:100}}>
+            <View style={{ flex: 1, alignItems: 'center', marginTop:130}}>
                 <View style={styles.joinHeaderWarpper}>
                     <Text style={styles.joinHeaderText}>
                         {headerText()}
@@ -106,7 +106,7 @@ const ServiceApply = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
     joinHeaderWarpper: {
-        borderColor: 'black',
+        borderColor: '#92D14F',
         borderBottomWidth: 2,
     },
     joinHeaderText: {
@@ -114,9 +114,11 @@ const styles = StyleSheet.create({
         paddingBottom: 7,
         paddingLeft: 14,
         paddingRight: 14,
-        color: 'black',
+        width:'100%',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
         fontSize: 20,
-        fontWeight: '500'
+        color:'#191919',
     },
     submitButtonView: {
         flexDirection: 'row', 
@@ -125,19 +127,18 @@ const styles = StyleSheet.create({
     },
     submitButton: {
       marginTop: 20,
-      padding:10,
+      padding:7,
       borderRadius: 10,
-      backgroundColor: '#47C83E',
+      borderColor: '#92D14F',
       borderWidth: 0,
-      width: 300,
-      height: 40,
+      width: 250,
       justifyContent: 'center',
     }, 
     submitButtonText: {
-      fontSize: 17,
-    //   color: 'white',
-      fontWeight: "500",
-      lineHeight: 30
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 20,
+        color:'#FFFFFF',
     },
 });
 

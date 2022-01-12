@@ -13,14 +13,15 @@ const ServiceDetail = ({route, navigation}) => {
     const [headerInfo, setHeaderInfo] = useState(route.params); //type, text
 
     const appendButton = () => {
-        console.log('asdf')
         return (
-        <Button 
-            styles={{alignSelf: 'center', marginTop: 20, marginBottom: 10, width: '40%'}} 
-            title='신청하기'
-            onPress={() => {navigation.navigate('ServiceApply', {
-                ...headerInfo
-            })}} />
+            <Button 
+                styles={styles.appendButtonStyle} 
+                title='신청하기'
+                TextStyle={styles.appendButtonTextStyle}
+                onPress={() => {navigation.navigate('ServiceApply', {
+                    ...headerInfo
+                })}} 
+            />
         );
     }
 
@@ -31,7 +32,7 @@ const ServiceDetail = ({route, navigation}) => {
                     navigation={navigation}
                     title={headerInfo ? headerInfo.text : ''}
                 />
-                <WebView style={{marginTop:50, flex:1}} source={{ uri: route.params.url }} />
+                <WebView style={styles.Content} source={{ uri: route.params.url }} />
                 {route.params.googleForm ? appendButton() : <View></View>}
             </View>
         </SafeAreaView>
@@ -50,7 +51,8 @@ const styles = StyleSheet.create({
         height:'100%'
     },
     Content:{
-        marginTop:50,
+        marginTop:70,
+        flex:1
     },
     Row:{
         flexDirection: "row",
@@ -105,7 +107,20 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: '100%',
         height: 30,
-    }
+    },
+    appendButtonStyle: {
+        alignSelf: 'center', 
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 20, 
+        marginBottom: 20, 
+    },
+    appendButtonTextStyle: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 17,
+        color:'#FFFFFF',
+    },
 });
 
 export default ServiceDetail;

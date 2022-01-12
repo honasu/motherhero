@@ -8,13 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* heroTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* heroTests.m */; };
+		120C5810755445E3A1ADECCC /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 71806EC2B06C452CA73109DD /* NotoSansKR-Regular.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		29F2E31027634B5F001BFBAE /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F2E30F27634B5F001BFBAE /* SplashScreen.storyboard */; };
+		5BCEB19343BC451DBDDFB353 /* NotoSansKR-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4E6E67B27F8E48BAAEBDE9DE /* NotoSansKR-Thin.otf */; };
+		5CBA6B88C0DB45D2B8E88E56 /* NotoSansKR-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = D7CC7A39B7174ED2B1117F7E /* NotoSansKR-Black.otf */; };
 		71D5F7645517BE57CDF151CA /* libPods-hero.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34B1B6DEEB8F109F1EB174F6 /* libPods-hero.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		AE1235571BD24B69A9F79F36 /* NotoSansKR-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = D17C4005627A425482A5EF58 /* NotoSansKR-Light.otf */; };
+		B914CE29C1054A31AE16BF06 /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D908730D1B4149E59D9A379F /* NotoSansKR-Bold.otf */; };
 		DEC029CCDC5D740C0A156D8B /* libPods-hero-heroTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6E5301F041B7CAFAD52BE54 /* libPods-hero-heroTests.a */; };
+		F40F3F7DAC48434EBA4A3D28 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D17FFDF3FC24A72AE2EB26B /* NotoSansKR-Medium.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,9 +62,15 @@
 		29F2E30F27634B5F001BFBAE /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		2C5B832CB44AA50DBF40527E /* Pods-hero.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero.debug.xcconfig"; path = "Target Support Files/Pods-hero/Pods-hero.debug.xcconfig"; sourceTree = "<group>"; };
 		34B1B6DEEB8F109F1EB174F6 /* libPods-hero.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hero.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E6E67B27F8E48BAAEBDE9DE /* NotoSansKR-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Thin.otf"; path = "../src/assets/fonts/NotoSansKR-Thin.otf"; sourceTree = "<group>"; };
+		71806EC2B06C452CA73109DD /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Regular.otf"; path = "../src/assets/fonts/NotoSansKR-Regular.otf"; sourceTree = "<group>"; };
+		7D17FFDF3FC24A72AE2EB26B /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Medium.otf"; path = "../src/assets/fonts/NotoSansKR-Medium.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = hero/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81DBFF853B46BE71C4795869 /* Pods-hero-heroTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero-heroTests.release.xcconfig"; path = "Target Support Files/Pods-hero-heroTests/Pods-hero-heroTests.release.xcconfig"; sourceTree = "<group>"; };
 		BACF85B831A5C9DD532BEE7E /* Pods-hero.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero.release.xcconfig"; path = "Target Support Files/Pods-hero/Pods-hero.release.xcconfig"; sourceTree = "<group>"; };
+		D17C4005627A425482A5EF58 /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Light.otf"; path = "../src/assets/fonts/NotoSansKR-Light.otf"; sourceTree = "<group>"; };
+		D7CC7A39B7174ED2B1117F7E /* NotoSansKR-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Black.otf"; path = "../src/assets/fonts/NotoSansKR-Black.otf"; sourceTree = "<group>"; };
+		D908730D1B4149E59D9A379F /* NotoSansKR-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Bold.otf"; path = "../src/assets/fonts/NotoSansKR-Bold.otf"; sourceTree = "<group>"; };
 		E6B9DE80A8837333F61F130A /* Pods-hero-heroTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero-heroTests.debug.xcconfig"; path = "Target Support Files/Pods-hero-heroTests/Pods-hero-heroTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6E5301F041B7CAFAD52BE54 /* libPods-hero-heroTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hero-heroTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -195,6 +207,12 @@
 		A22F0A43FF354DC183AA7CCB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D7CC7A39B7174ED2B1117F7E /* NotoSansKR-Black.otf */,
+				D908730D1B4149E59D9A379F /* NotoSansKR-Bold.otf */,
+				D17C4005627A425482A5EF58 /* NotoSansKR-Light.otf */,
+				7D17FFDF3FC24A72AE2EB26B /* NotoSansKR-Medium.otf */,
+				71806EC2B06C452CA73109DD /* NotoSansKR-Regular.otf */,
+				4E6E67B27F8E48BAAEBDE9DE /* NotoSansKR-Thin.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -296,6 +314,12 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				29F2E31027634B5F001BFBAE /* SplashScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				5CBA6B88C0DB45D2B8E88E56 /* NotoSansKR-Black.otf in Resources */,
+				B914CE29C1054A31AE16BF06 /* NotoSansKR-Bold.otf in Resources */,
+				AE1235571BD24B69A9F79F36 /* NotoSansKR-Light.otf in Resources */,
+				F40F3F7DAC48434EBA4A3D28 /* NotoSansKR-Medium.otf in Resources */,
+				120C5810755445E3A1ADECCC /* NotoSansKR-Regular.otf in Resources */,
+				5BCEB19343BC451DBDDFB353 /* NotoSansKR-Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,6 +560,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 26368VRD5K;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = hero/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -547,7 +572,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.hero1234;
 				PRODUCT_NAME = hero;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -562,6 +587,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 26368VRD5K;
 				INFOPLIST_FILE = hero/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -572,7 +598,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.hero1234;
 				PRODUCT_NAME = hero;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

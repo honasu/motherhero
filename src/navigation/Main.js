@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, SafeAreaView, StyleSheet, TouchableOpacity, View, Text, ImageBackground, ScrollView } from 'react-native';
+import { Dimensions, StatusBar, Image, SafeAreaView, StyleSheet, TouchableOpacity, View, Text, ImageBackground, ScrollView, Platform } from 'react-native';
 
 import Header from './../components/Header';
 import SearchBox from './../components/SearchBox';
@@ -12,8 +12,8 @@ import Swiper from 'react-native-swiper';
 
 
 const bannerView = (img) => {
-    return img.map( value => 
-        (<ImageBackground source={value.img} style={styles.slide}>
+    return img.map( (value, index) => 
+        (<ImageBackground key={index} source={value.img} style={styles.slide}>
             <Text style={styles.bannerText}>{value.str}</Text>
         </ImageBackground>)
     );
@@ -25,6 +25,7 @@ const SwiperComponent = (data) => {
       autoplay
       autoplayTimeout={4}
       height={250}
+      showsPagination={false}
       >
         {bannerView(data.img)}
       </Swiper>
@@ -32,45 +33,56 @@ const SwiperComponent = (data) => {
 }
 
 const Main = ({ navigation }) => {
+    let screen = Dimensions.get('screen').height;
+    let window = Dimensions.get('window').height;
+    let bar = StatusBar.currentHeight;
+    let androidPadding = screen - window;
+    
     let imagePathList = [
-        {img:require('../assets/images/bannerCat1.jpeg'), str:'맘먀'},
-        {img:require('../assets/images/bannerCat2.jpeg'), str:'루루'}
+        {uid:1, img:require('../assets/images/bannerCat1.jpeg'), str:'맘먀'},
+        {uid:2, img:require('../assets/images/bannerCat2.jpeg'), str:'루루'}
     ];
     let mainContentText = [
         {
+            uid: '1',
             page: 'BabyCategory',
             text: '육아정보',
-            img: require('../assets/images/cat1.jpeg')
+            img: require('../assets/images/icons/main1.png')
         },
         {
+            uid: '2',
             page: 'ServiceInfoCategory',
             text: '지원서비스\n정보',
-            img: require('../assets/images/cat2.jpeg')
+            img: require('../assets/images/icons/main2.png')
         },
         {
+            uid: '3',
             page: 'QNA',
             text: '전문가\nQ&A',
-            img: require('../assets/images/cat3.jpeg')
+            img: require('../assets/images/icons/main3.png')
         },
         {
+            uid: '4',
             page: 'Review',
             text: '지원 후기',
-            img: require('../assets/images/cat4.jpeg')
+            img: require('../assets/images/icons/main4.png')
         },
         {
-            page: 'Login',
+            uid: '5',
+            page: 'MotherList',
             text: '슬기로운\n엄마생활',
-            img: require('../assets/images/cat6.jpeg')
+            img: require('../assets/images/icons/main5.png')
         },
         {
-            page: 'Login',
+            uid: '6',
+            page: 'LinkPage',
             text: '대한\n사회복지회',
-            img: require('../assets/images/cat5.jpeg')
+            img: require('../assets/images/icons/main6.png')
         },
     ]
     return (
-        <SafeAreaView style={{flex:1, position:'relative', backgroundColor: '#fff'}}>
-            <View>
+        <SafeAreaView style={[{flex:1, position:'relative', backgroundColor: '#fff'}]}>
+            <View style={{flex:1}}>
                 <Header navigation={navigation} />
                 <ScrollView>
                     <View style={styles.titleView}>
@@ -121,21 +133,31 @@ const Main = ({ navigation }) => {
                     </View>
                     <View style={styles.apply}>
                         <View style={styles.applyView}>
-                            <TouchableOpacity activeOpacity={0.8} style={[styles.applyButton, styles.Shadow]} onPress={ () => navigation.navigate('Login') }>
-                                <View style={styles.applyContent}>
+                            <TouchableOpacity activeOpacity={0.8} style={[styles.applyButton]} 
+                                onPress={ () => navigation.navigate('ServiceInfoList', {
+                                    type: '',
+                                    text: '한부모가정지원사업',
+                                })}
+                            >
+                                <View style={[styles.applyContent, styles.Shadow]}>
                                     <Text style={styles.applyText}>
                                         한부모가정지원사업{'\n'}신청하기
                                     </Text>
-                                    <Image source={require('./../assets/images/move.png')} style={styles.applyImg}/>
+                                    <Image source={require('./../assets/images/icons/rightCircle.png')} style={styles.applyImg}/>
                                 </View>
                             </TouchableOpacity>
                             
-                            <TouchableOpacity activeOpacity={0.8} style={[styles.applyButton, styles.Shadow]} onPress={ () => navigation.navigate('Login') }>
-                                <View style={styles.applyContent}>
-                                    <Text style={styles.applyText}>
+                            <TouchableOpacity activeOpacity={0.8} style={[styles.applyButton]} 
+                                onPress={ () => navigation.navigate('ServiceInfoList', {
+                                    type: '',
+                                    text: '서민금융재단사업',
+                                })}
+                            >
+                                <View style={[styles.applyContent, styles.Shadow]}>
+                                    <Text style={[styles.applyText]}>
                                         서면금융제단사업{'\n'}신청하기
                                     </Text>
-                                    <Image source={require('./../assets/images/move.png')} style={styles.applyImg}/>
+                                    <Image source={require('./../assets/images/icons/rightCircle.png')} style={styles.applyImg}/>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -144,23 +166,26 @@ const Main = ({ navigation }) => {
                         <ListHeaderView 
                             title='공지사항'
                             navigation={navigation}
-                            movePage='Login'
+                            movePage='Notice'
                         />
                         <ListContentView 
                             title='공지사항1asdasdsadasdasdasdasdasdasdasdadas'
                             date='2021.12.06'
-                            onPress={() => navigation.navigate('Login')}
+                            onPress={() => navigation.navigate('Notice')}
                         />
                         <ListContentView 
                             title='공지사항2asdasdsadasdasdasdasdasdasdasdadas'
                             date='2021.12.06'
-                            onPress={() => navigation.navigate('Login')}
+                            onPress={() => navigation.navigate('Notice')}
                         />
                         <ListContentView 
                             title='공지사항3asdasdsadasdasdasdasdasdasdasdadas'
                             date='2021.12.06'
-                            onPress={() => navigation.navigate('Login')}
+                            onPress={() => navigation.navigate('Notice')}
                         />
+                    </View>
+                    <View  style={styles.footer}>
+                        <Image source={require('./../assets/images/icons/footerLogo.png')} style={styles.footerImg}/>
                     </View>
                 </ScrollView>
             </View>
@@ -174,50 +199,65 @@ const styles = StyleSheet.create({
         width:'90%',
         alignSelf:'center',
         marginTop: 20,
-        marginBottom: 50,
+        marginBottom: 40,
     },
-    Shadow:{
-      shadowColor: "#000",
-      shadowOffset: {
-          width: 0,
-          height: 1,
-      },
-      shadowOpacity: 0.20,
-      shadowRadius: 1.41,
-      elevation: 2,
+    Shadow: { 
+        ...Platform.select({ 
+            ios: { 
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 1,
+                },
+                shadowOpacity: 0.20,
+                shadowRadius: 1.41,
+            }, 
+            android: { 
+                shadowColor: "#000000",                
+                elevation: 2,
+            }, 
+        }), 
     },
     apply: {
-        backgroundColor: '#47C83E',
-        height:100
+        backgroundColor: '#F9FFEB',
+        height:130
     },
     applyView: {
         flex:1,
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         flexDirection: 'row',
     },
     applyContent: {
-        flex:1,
-        marginLeft: 25,
-        marginRight: 25,
-        marginTop: 15,
-        marginBottom: 15,
+        flex: 1,
+        width: Dimensions.get('window').width * 0.43,
         borderRadius: 10,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: "center",
+        padding: 13,
+        // paddingTop:0,
+        // alignItems: 'center',
+        // justifyContent: "center",
         position: 'relative',
     },
     applyButton: {
-        flex:1,
+        margin:7,
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
     },
     applyText: {
-        // flex:1,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Medium',
+        color: '#191919',
+        fontSize: 15
     },
     applyImg: {
         position: 'absolute',
-        bottom: 10,
-        right: 10,
+        bottom: 5,
+        right: 5,
+        width: 30,
+        height: 30,
     },
     wrapper: {},
     slide: {
@@ -275,12 +315,10 @@ const styles = StyleSheet.create({
         height: 150,
         resizeMode: 'contain',
     },
-    titleView: {
-        height: 250,
-        marginTop: 50,
-        alignSelf: 'center', 
-        // padding: 10
-    },
+    // titleView: {
+    //     height: 280,
+    //     alignSelf: 'center',
+    // },
     mainBackImg: {
         flex: 1,
     },
@@ -308,6 +346,18 @@ const styles = StyleSheet.create({
         fontSize: 11,
         fontWeight: "bold",
         color: '#fff',
+    },
+    footer: {
+        flex: 1,
+        height: 105,
+        backgroundColor: '#F7F7F7',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    footerImg: {
+        resizeMode: 'contain',
+        width: 200,
+        height: 40
     }
 });
 

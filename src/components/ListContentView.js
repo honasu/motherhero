@@ -11,7 +11,7 @@ const ListContentView = (props) => {
 
     const appendDate = () => {
         if(date) {
-            return (<Text style={[styles.moveText, dateStyle]}>
+            return (<Text style={[styles.dateText, dateStyle]}>
                 {date}
             </Text>);
         }
@@ -31,8 +31,8 @@ const ListContentView = (props) => {
 
 const styles = StyleSheet.create({
     view: {
-        paddingBottom:6,
-        paddingTop:6,
+        paddingBottom:7,
+        paddingTop:7,
         paddingLeft:5,
         paddingRight:5,
         borderBottomColor: 'lightgray',
@@ -44,14 +44,18 @@ const styles = StyleSheet.create({
     },
     title: {
         flex: 1,
-        fontWeight: '300',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Thin',
         fontSize: 15,
-        paddingRight: 5
+        color: '#191919',
+        paddingRight: 7
     },
-    moveText: {
-        width: 65,
-        fontWeight: '300',
-        fontSize: 13    
+    dateText: {
+        width: 70,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Thin',
+        fontSize: 13,
+        color: '#AAAAAA',
     }
 });
 

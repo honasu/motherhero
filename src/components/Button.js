@@ -11,23 +11,19 @@ const Button = (props) => {
 
 const styles = StyleSheet.create({
   TouchableOpacity:{
-    width:230,
-    height:30,    
+    width: '33%',
     borderWidth:0,
-    paddingLeft:5,
-    paddingRight:5,
-    paddingTop:5,
-    paddingBottom:5,
-    backgroundColor:'#47C83E',
+    padding:7,
+    backgroundColor:'#92D14F',
     borderRadius:5,
     alignItems:'center',
-    marginTop:10
+    // marginTop:10
   },
   Text:{
-    color:'white',
+    color:'#FFFFFF',
     fontSize:12,
-    height:'100%',
-    lineHeight:18
+    // height:'100%',
+    // lineHeight:18
   },
   Disabled:{
       backgroundColor:'#9e9e9e',

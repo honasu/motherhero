@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         height:'100%'
     },
     Content:{
-        marginTop:50,
+        marginTop:70,
     },
     Row:{
         flexDirection: "row",
@@ -140,16 +140,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     selectorView: {
-        marginTop: 50,
+        marginTop: 70,
         paddingTop: 10,
         paddingBottom: 10,
         paddingRight: 20,
         paddingLeft: 20,
-        backgroundColor: 'lightgreen',
+        backgroundColor: '#F9FFEB',
     },
     SelectAreaStyle: {
         // flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#FFFFFF',
         width: '100%',
         height: 30,
     }

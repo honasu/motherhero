@@ -12,9 +12,7 @@ const ListHeaderView = (props) => {
                 {title}
             </Text>
             <TouchableOpacity activeOpacity={0.8} style={styles.moveButton} onPress={ () => navigation.navigate(movePage) }>
-                <Text style={styles.moveText}>
-                    +
-                </Text>
+                <Image source={require('./../assets/images/icons/plus.png')} style={styles.moveImg}/>
             </TouchableOpacity>
         </View>
     );
@@ -23,18 +21,22 @@ const ListHeaderView = (props) => {
 const styles = StyleSheet.create({
     view: {
         paddingBottom:5,
-        borderBottomColor: 'black',
+        borderBottomColor: '#92D14F',
         borderBottomWidth: 3.5,
         justifyContent: 'space-between',
         flexDirection: 'row',
+        alignItems: 'center',
+        // alignContent: 'center'
     },
     title: {
-        fontWeight: '600',
-        fontSize: 17
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Medium',
+        fontSize: 18,
+        color: '#191919',
     },
-    moveText: {
-        fontWeight: '600',
-        fontSize: 17      
+    moveImg: {
+        width: 18,
+        height: 18,
     }
 });
 

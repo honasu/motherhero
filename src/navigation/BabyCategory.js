@@ -15,58 +15,52 @@ const BabyCategory = ({navigation}) => {
     }, [babyList])
 
     const setMoveButton = (data) => {
-        const result = []
-        for(let num in data) {
-            result.push(
+        return data.map((value, index) => 
+            (
                 <TouchableOpacity 
                     activeOpacity={0.8} 
-                    style={styles.applyButton} 
+                    style={[styles.applyButton]} 
                     onPress={ () => navigation.navigate('BabyInfo', {
-                        type: data[num].type,
-                        text: data[num].text.split(' ')[1],
+                        type: value.type,
+                        text: value.text.split(' ')[1],
                     })}
                 >
                     <Text style={styles.applyText}>
-                        {data[num].text}
+                        {'・ ' + value.text}
                     </Text>
                 </TouchableOpacity>
             )
-        }
-        return (
-        <View>
-            {result}
-        </View>
         );
     };
 
     const getBabyList = () => {
         const data = [
             [{
-                text: '・ 심',
+                text: '심',
                 type: 'a'
             },
             {
-                text: '・ 심',
+                text: '심',
                 type: 'b'
             },
             {
-                text: '・ 해',
+                text: '해',
                 type: 'c'
             }],
             [{
-                text: '・ 이',
+                text: '이',
                 type: 'd'
             },],
             [{
-                text: '・ 삼',
+                text: '삼',
                 type: 'e'
             },],
             [{
-                text: '・ 사',
+                text: '사',
                 type: 'f'
             },],
             [{
-                text: '・ 오',
+                text: '오',
                 type: 'g'
             },],
         ]
@@ -101,18 +95,18 @@ const BabyCategory = ({navigation}) => {
 
     const renderHeader = (section) => {
         return (
-        <View style={[styles.Header, styles.Row, (parseInt(section.index) == parseInt(activeSections)?styles.ActiveHeader:"")]}>
-            <Text style={styles.headerText}>{section.title}</Text>
-            <Image style={[styles.HeaderArrow,(parseInt(section.index) == parseInt(activeSections)?{right:12}:"")]} source={(parseInt(section.index) == parseInt(activeSections)?require('./../assets/images/icon/up-arrow.png'):require('./../assets/images/icon/down-arrow.png'))}/>
+        <View style={[styles.Header, styles.Row]}>
+            <Text style={[styles.headerText]}>{section.title}</Text>
+            <Image style={[styles.HeaderArrow,]} source={(parseInt(section.index) == parseInt(activeSections)?require('./../assets/images/icon/up-arrow.png'):require('./../assets/images/icon/down-arrow.png'))}/>
         </View>
         );
     }
 
     const renderContent = (section) => {
         return (
-        <View style={[styles.Item,(parseInt(section.index) == parseInt(activeSections)?{borderBottomWidth:1,borderBottomColor:'#9e9e9e'}:{borderBottomWidth:0})]}>
+        <View style={[styles.Item, ]}>
             <View>
-                <Text>{section.description}</Text>
+                {section.description}
             </View>
         </View>
         );
@@ -150,33 +144,46 @@ const styles = StyleSheet.create({
     },
     ContentView:{
         position:'relative',
-        height:'100%'
+        height:'100%',
     },
     Content:{
-        marginTop:50,
+        marginTop:70,
     },
     Row:{
         flexDirection: "row",
         flexWrap: "wrap",
     },
     Header: {
-        backgroundColor: 'white',
+        borderBottomColor:'#DCDCDC',
+        borderBottomWidth:1,
+        backgroundColor: '#FFFFFF',
         paddingTop: 15,
         paddingBottom: 15,
         paddingLeft: 10,
         paddingRight: 10,
-        borderBottomWidth:1,
-        borderBottomColor:'#9e9e9e'
     },
-    ActiveHeader:{
-        paddingLeft:0,
-        paddingRight:0,
-        marginLeft:10,
-        marginRight:10
+    Shadow: { 
+        ...Platform.select({ 
+            ios: { 
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 1,
+                },
+                shadowOpacity: 0.20,
+                // shadowRadius: 1.41,
+            }, 
+            android: { 
+                shadowColor: "#000000",
+                elevation: 6,
+            }, 
+        }), 
     },
     headerText: {
-        fontSize: 14,
-        fontWeight: '500',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        color: '#191919',
+        fontSize: 15,
         paddingLeft: 12
     },
     HeaderArrow:{
@@ -187,14 +194,25 @@ const styles = StyleSheet.create({
         right:22
     },
     Item: {
-        borderBottomColor:'#9e9e9e',
+        borderBottomColor:'#DCDCDC',
         borderBottomWidth:1,
         paddingTop: 10,
         paddingBottom: 10,
         paddingLeft:20,
         paddingRight:20,
-        backgroundColor: 'white',
+        backgroundColor: '#F7F7F7',
     },
+    applyButton: {
+        paddingTop: 5,
+        paddingBotton: 5,
+        margin:5
+    },
+    applyText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        color: '#191919',
+        fontSize: 13,
+    }
 });
 
 export default BabyCategory;

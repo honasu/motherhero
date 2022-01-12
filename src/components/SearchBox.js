@@ -13,7 +13,7 @@ const SearchBox = (props) => {
                 placeholder={"검색 내용을 입력하세요."}
             />
             <ImageButton
-                image={require('./../assets/images/icon/search-on.png')}
+                image={require('./../assets/images/icons/search.png')}
                 styles={styles.SearchButton}
                 onPress={() => {
                     console.log('search');
@@ -26,34 +26,42 @@ const SearchBox = (props) => {
 
 const styles = StyleSheet.create({
     View: {
-        width:'80%',
+        width:'90%',
         height:50,
         paddingTop:5,
         paddingBottom:5,
-        paddingLeft:10,
+        // paddingLeft:10,
         paddingRight:10,
         flexWrap: "wrap",
         flexDirection: "row",
         position:'absolute',
-        top:275,
+        top:225,
         alignSelf: 'center',
         backgroundColor:'white',
         alignItems: 'center',
-        borderRadius:5
+        borderRadius:10
     },
-    Shadow:{
-      shadowColor: "#000",
-      shadowOffset: {
-          width: 0,
-          height: 1,
-      },
-      shadowOpacity: 0.20,
-      shadowRadius: 1.41,
-      elevation: 2,
+    Shadow: { 
+        ...Platform.select({ 
+            ios: { 
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 1,
+                },
+                shadowOpacity: 0.20,
+                shadowRadius: 1.41,
+            }, 
+            android: { 
+                shadowColor: "#000000",
+                
+                elevation: 2,
+            }, 
+        }), 
     },
     SearchButton:{
-      width:30,
-      height:30,
+      width:24,
+      height:24,
       paddingLeft:0,
       paddingRight:0,
       marginTop:10,

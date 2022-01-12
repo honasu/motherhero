@@ -12,7 +12,7 @@ const ChattingView = (props) => {
         return (<View key={index} style={[styles.ChatItemRight, chatItemStyle, (index+1==chatData.length?{marginBottom:30}:{display:'flex'})]}>
             <View style={styles.ItemArea}>
                 <View style={styles.ChatBubbleHome}>
-                    <Text style={{color:'black'}}>{data.chat}</Text>
+                    <Text style={[styles.chatText, {color:'#FFFFFF'}]}>{data.chat}</Text>
                 </View>
                 <Text style={{textAlign:'right'}}>{data.reg_date}</Text>
             </View>
@@ -24,8 +24,9 @@ const ChattingView = (props) => {
             <View style={styles.ItemArea}>
                 <Text style={{display:'flex'}}>{data.writer}</Text>
                 <View style={styles.ChatBubbleAway}>
-                    <Text style={{color:'white'}}>{data.chat}</Text>
+                    <Text style={[styles.chatText, {color:'#191919'}]}>{data.chat}</Text>
                 </View>
+                <Text style={{textAlign:'left'}}>{data.reg_date}</Text>
             </View>
         </View>);
         
@@ -57,8 +58,10 @@ const styles = StyleSheet.create({
     },
     ChattingView:{
         marginTop:-10,
-        padding:20,
-        marginBottom:70,
+        padding:15,
+        paddingBottom: 0,
+        marginBottom:40,
+        backgroundColor: '#F9FFEB'
     },
     ChatItemLeft:{
         alignItems:'flex-start'
@@ -71,13 +74,16 @@ const styles = StyleSheet.create({
     },
     ChatBubbleHome:{
         maxWidth:150,
-        borderWidth:1,
+        height: 35,
+        // borderWidth:1,
         paddingTop:5,
         paddingBottom:5,
         paddingLeft:10,
         paddingRight:10,
         borderRadius:5,
-        marginBottom:2
+        borderBottomEndRadius: 0,
+        marginBottom:2,
+        backgroundColor:'#92D14F',
     },
     ChatBubbleAway:{
         maxWidth:150,
@@ -87,8 +93,10 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         paddingRight:10,
         borderRadius:5,
+        borderTopStartRadius: 0,
         marginTop:2,
-        marginBottom:2
+        marginBottom:2,
+        backgroundColor: '#FFFFFF',
     }
 });
 

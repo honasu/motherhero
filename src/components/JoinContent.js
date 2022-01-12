@@ -1,14 +1,14 @@
 
 import React, {useState} from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
 
 import CheckBox from './CheckBox';
 
 const joinImg = (page) => {
     let result;
-    if(page == 1) result = (<Image source={require('./../assets/images/bannerCat1.jpeg')} style={styles.joinHeaderImg}/>);
-    if(page == 2) result = (<Image source={require('./../assets/images/bannerCat2.jpeg')} style={styles.joinHeaderImg}/>);
-    if(page == 3) result = (<Image source={require('./../assets/images/bannerCat3.jpeg')} style={styles.joinHeaderImg}/>);
+    if(page == 1) result = (<Image source={require('./../assets/images/icons/3tabs1.png')} style={styles.joinHeaderImg}/>);
+    if(page == 2) result = (<Image source={require('./../assets/images/icons/3tabs2.png')} style={styles.joinHeaderImg}/>);
+    if(page == 3) result = (<Image source={require('./../assets/images/icons/3tabs3.png')} style={styles.joinHeaderImg}/>);
     
     return result;
 }
@@ -86,6 +86,7 @@ const joinData = (data) => {
                         <TextInput
                             style={styles.joinInput}
                             placeholder={"이름을 입력하세요."}
+                            placeholderTextColor = "#D5D5D5"
                             onChangeText={ text => onChange({name: text}) }
                             value={seconedPageInfo.name}
                         />
@@ -94,6 +95,7 @@ const joinData = (data) => {
                         <TextInput
                             style={styles.joinInput}
                             placeholder={"생년월일을 입력하세요."}
+                            placeholderTextColor = "#D5D5D5"
                             onChangeText={ text => onChange({birth: text}) }
                             value={seconedPageInfo.birth}
                         />
@@ -102,6 +104,7 @@ const joinData = (data) => {
                         <TextInput
                             style={styles.joinInput}
                             placeholder={"연락처를 입력하세요."}
+                            placeholderTextColor = "#D5D5D5"
                             onChangeText={ text => onChange({phone: text}) }
                             value={seconedPageInfo.phone}
                         />
@@ -110,6 +113,7 @@ const joinData = (data) => {
                         <TextInput
                             style={styles.joinInput}
                             placeholder={"이메일을 입력하세요."}
+                            placeholderTextColor = "#D5D5D5"
                             onChangeText={ text => onChange({email: text}) }
                             value={seconedPageInfo.email}
                         />
@@ -120,11 +124,17 @@ const joinData = (data) => {
         case 3:
             result = (
                 <View>
-                    <Image source={require('./../assets/images/icon/add-user-male.png')} style={styles.joinProfileImg}/>
+                    <TouchableOpacity
+                        style={styles.joinProfileUploadImage}
+                    >
+                        {/* todo 업로드 */}
+                        <Image source={require('./../assets/images/icons/login.png')} style={styles.joinProfileImg}/>
+                    </TouchableOpacity>
                     <View style={styles.joinInputView}>
                         <TextInput
                             style={styles.joinInput}
                             placeholder={"닉네임을 입력하세요."}
+                            placeholderTextColor = "#D5D5D5"
                             onChangeText={ text => onChange({nicName: text}) }
                             value={thirdPageInfo.nicName}
                         />
@@ -152,18 +162,24 @@ const JoinContent = (data) => {
 }
 
 const styles = StyleSheet.create({
+    joinProfileUploadImage: {
+
+    },
     joinProfileImg: {
-        borderRadius:100, 
-        borderWidth:2, 
-        marginTop:30,
+        // borderRadius:100, 
+        // borderWidth:2, 
+        marginTop:10,
+        marginBottom:10,
         width:100,
         height:100,
         padding:15,
         alignSelf: 'center'
     },
     firstJoinText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        color:'#191919',
         fontSize:15,
-        fontWeight:'bold',
     },
     joinInputView: {
         borderWidth:1,
@@ -171,9 +187,10 @@ const styles = StyleSheet.create({
         paddingRight:15,
         paddingBottom:5,
         paddingLeft:15,
-        borderColor:'#000000',
+        borderColor:'#191919',
         borderRadius:5,
         marginTop:10,
+        width:270
     },
     joinInput: {
         height:30,
@@ -182,28 +199,23 @@ const styles = StyleSheet.create({
     },
     joinHeaderImg: {
         height: 100,
-        width: 300,
-        marginTop: 20,
+        width: 250,
+        // marginTop: 20,
         alignSelf: 'center', 
-    },
-    joinHeaderText: {
-        paddingTop: 7,
-        paddingBottom: 7,
-        paddingLeft: 14,
-        paddingRight: 14,
-        color: 'black',
-        fontSize: 20,
-        fontWeight: '500'
+        resizeMode: 'contain'
     },
     StepHeaderTextArea:{
         width:200,
         alignItems:'center',
         alignSelf: 'center', 
-        marginTop:30,
+        marginTop:10,
+        marginBottom:10
     },
     StepHeaderText:{
-        fontSize:20,
-        fontWeight:'bold',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 18,
+        color:'#191919',
     },
 });
 
