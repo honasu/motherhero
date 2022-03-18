@@ -1,22 +1,32 @@
 import * as React from 'react';
+import {useState} from 'react';
 import { Dimensions, View, Image, StyleSheet} from 'react-native';
 import Button from '../Button';
 import Input from '../Input';
 
 const ChattingButton = (props) => {
+    const [message, setMessage] = useState();
+
     return (
         <View style={[styles.View, styles.Shadow, styles.Row]}>
-            <Image style={styles.Image} source={require('../../assets/images/icons/plus_chat.png')}/>
+            {/* <Image style={styles.Image} source={require('../../assets/images/icons/plus_chat.png')}/> */}
             <Input
                 styles={[styles.BasicInput]}
                 InputStyle={styles.InputStyle}
                 placeholder={"무슨 고민이 있으신가요?"}
+                value={message}
+                onChangeText={setMessage}
             />
             <Button
                 title='보내기'
                 styles={styles.BasicButton}
                 TextStyle={[styles.SmallButtonText]}
-                // onPress={() => this.props.navigation.navigate('Main')}
+                onPress={() => {
+                    if(message) {
+                        props.insetMessage(message);
+                        setMessage(); 
+                    }
+                }}
             />
         </View>
     );

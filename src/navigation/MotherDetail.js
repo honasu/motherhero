@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Dimensions, StyleSheet, View} from 'react-native';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,10 +8,59 @@ import Button from './../components/Button';
 import HeaderPopup from './../components/HeaderPopup';
 import Selector from './../components/Selector';
 
+import { Context } from './../context/index';
+import { webURL } from './../../config.json';
+
 const MotherDetail = ({route, navigation}) => {
-    let uid = route.params.uid;
-    let url = route.params.url;
-    let headerTitle = route.params.headerTitle;
+    const { state: { uid, id }, dispatch } = useContext( Context );
+    let MemberID = id;
+    let url = webURL + 'listBoard.html';
+    let [BoardUID, setBoardUID] = useState(route.params.BoardUID);
+    let [headerTitle, setHeaderTitle] = useState(route.params.headerTitle);
+
+    let webviewRef = useRef();
+
+    /** 웹뷰 ref */
+    const handleSetRef = _ref => {
+      webviewRef = _ref;
+    };
+
+    const reload = () => {
+        webviewRef.reload();
+    }
+
+    const handleOnMessage = (message) => {
+        console.log('handleOnMessage');
+        const { nativeEvent } = message;
+        const data = JSON.parse(nativeEvent.data);
+        if(data.type == 'fin') {
+            navigation.goBack();
+        }
+        if(data.type == 'delete') {
+            navigation.navigate('MotherList', {
+                reset: 1
+            });
+        }
+        if(data.type == 'update') {
+            navigation.navigate('MotherUpdate', {
+                BoardUID: BoardUID,
+                reload: reload
+            });
+        }
+        
+    };
+    const handleEndLoading = e => {
+        console.log("handleEndLoading");
+        /** rn에서 웹뷰로 정보를 보내는 메소드 */
+        webviewRef.postMessage( JSON.stringify({
+            type: "pageInfo",
+            data: {
+                MemberID: MemberID,
+                BoardUID: BoardUID,
+                BoardType: 'mother'
+            }
+        }));
+    };
 
     return (
         <SafeAreaView>
@@ -20,7 +69,16 @@ const MotherDetail = ({route, navigation}) => {
                     navigation={navigation}
                     title={headerTitle}
                 />
-                <WebView style={{marginTop:70, flex:1}} source={{ uri: url }} />
+                <WebView 
+                    // ref={}
+                    style={{marginTop:70, flex:1}} 
+                    source={{ uri: url }} 
+                    ref={handleSetRef}
+                    incognito={true} //캐시 비우기
+                    javaScriptEnabled={true}
+                    onLoadEnd={handleEndLoading}
+                    onMessage={handleOnMessage}
+                />
             </View>
         </SafeAreaView>
     );

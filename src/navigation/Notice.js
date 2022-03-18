@@ -1,98 +1,84 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderSub from '../components/HeaderSub'
-import Accordion from 'react-native-collapsible/Accordion';
+import axios from 'axios';
+import {AccordionList} from "accordion-collapse-react-native";
+// import { Separator } from 'native-base';
 
-const BabyCategory = ({navigation}) => {
+import { serverURL } from './../../config.json';
 
-    const [babyList, setBabyList] = useState();
-    const [activeSections, setActiveSections] = useState([]);
+const Notice = ({route, navigation}) => {
+    const startIndex = route.params.index;
+    const [noticeList, setNoticeList] = useState([]);
+    const [activeSections, setActiveSections] = useState();
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        babyList ? '' : getBabyList();
-    }, [babyList])
+        console.log(noticeList)
+        noticeList[0] ? '' : getNoticeList();
+    }, [])
 
-    const setMoveButton = (data) => {
-        return data.map((value, index) => 
-            (
-                <TouchableOpacity 
-                    activeOpacity={0.8} 
-                    style={[styles.applyButton]} 
-                    onPress={ () => navigation.navigate('BabyInfo', {
-                        type: value.type,
-                        text: value.text.split(' ')[1],
-                    })}
-                >
-                    <Text style={styles.applyText}>
-                        {'・ ' + value.text}
-                    </Text>
-                </TouchableOpacity>
-            )
-        );
-    };
+    const getNoticeList = async () => {
+        if(loading) return;
+        setLoading(true);
 
-    const getBabyList = () => {
-        setBabyList([
-            {
-                index : 0,
-                title : "공지5",
-                description : <Text>공지5내용</Text>
-            },
-            {
-                index : 1,
-                title : "공지4",
-                description : <Text>공지4내용</Text>
-            },
-            {
-                index : 2,
-                title : "공지3",
-                description : <Text>공지3내용</Text>
-            },
-            {
-                index : 3,
-                title : "공지2",
-                description : <Text>공지2내용</Text>
-            },
-            {
-                index : 4,
-                title : "공지1",
-                description : <Text>공지1내용</Text>
-            }  
-        ]);
+        const result = await axios({
+            url: serverURL + 'index/board',
+            method: 'get',
+            params: {
+                page: page+1,
+                limit: 20,
+                BoardType: 'notice'
+            }
+        });
+        const data = result.data;
+        if(data.info[0]) {
+            setPage(page+1);
+            if(data.status == 200) {
+                setNoticeList([...noticeList, ...data.info]);
+            }
+            setLoading(false);
+        }
     }
 
     const renderHeader = (section) => {
         return (
         <View style={[styles.Header, styles.Row]}>
-            <Text style={[styles.headerText]}>{section.title}</Text>
-            <Image style={[styles.HeaderArrow,]} source={(parseInt(section.index) == parseInt(activeSections)?require('./../assets/images/icon/up-arrow.png'):require('./../assets/images/icon/down-arrow.png'))}/>
+            <Text style={[styles.headerText]}>{section.BoardTitle}</Text>
+            <Image style={[styles.HeaderArrow,]} source={(section.BoardUID == activeSections?require('./../assets/images/icons/up-arrow.png'):require('./../assets/images/icons/down-arrow.png'))}/>
         </View>
         );
     }
 
     const renderContent = (section) => {
         return (
-        <View style={[styles.Item, ]}>
-            <View>
-                {section.description}
-            </View>
+        <View style={[styles.Item]}>
+            <Text>
+                {section.BoardDetail}
+            </Text>
         </View>
         );
     }
 
-    const appendBabyList = () => {
+    const onEndReached = () => {
+        getNoticeList()
+    }
+
+    const appendNoticeList = () => {
         return (
-        <ScrollView style={styles.Content}>
-            <Accordion
-                sections={babyList}
-                activeSections={activeSections}
-                renderHeader={renderHeader}
-                renderContent={renderContent}
-                onChange={setActiveSections}
+            <AccordionList 
+                style={styles.Content}
+                list={noticeList}
+                header={renderHeader}
+                body={renderContent}
+                keyExtractor={item => item.BoardUID}
+                onEndReached={onEndReached}
+                expandedIndex={startIndex}
+                onToggle={(value) => value == activeSections ? setActiveSections() : setActiveSections(value)}
             />
-        </ScrollView>
         );
     }
 
@@ -104,7 +90,7 @@ const BabyCategory = ({navigation}) => {
                     navigation={navigation}
                     title={'공지사항'}
                 />
-                {babyList ? appendBabyList() : <View></View>}
+                {noticeList ? appendNoticeList() : null}
             </View>
         </SafeAreaView>
     );
@@ -189,4 +175,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default BabyCategory;
+export default Notice;

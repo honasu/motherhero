@@ -1,15 +1,28 @@
 package com.hero;
 
 import android.os.Bundle;
-import org.devio.rn.splashscreen.SplashScreen; // 추가
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate; // <- add this necessary import
+import com.zoontek.rnbootsplash.RNBootSplash; // <- add this necessary import
 
 public class MainActivity extends ReactActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.show(this);
-        super.onCreate(savedInstanceState);
+      super.onCreate(savedInstanceState);
+      // RNBootSplash.init(MainActivity.this);
     }
+
+  @Override
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new ReactActivityDelegate(this, getMainComponentName()) {
+
+      @Override
+      protected void loadApp(String appKey) {
+        RNBootSplash.init(MainActivity.this); // <- initialize the splash screen
+        super.loadApp(appKey);
+      }
+    };
+  }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.

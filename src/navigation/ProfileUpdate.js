@@ -1,25 +1,113 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Dimensions, StyleSheet, View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import axios from 'axios';
 
 import Button from '../components/Button';
 import HeaderPopup from '../components/HeaderPopup';
+import Popup from '../components/Popup'
 import Selector from '../components/Selector';
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
 
 const ProfileUpdate = ({route, navigation}) => {
+    const { state: { uid, id, extra }, dispatch } = useContext( Context );
 
-    const [ nickName, setNickName ] = useState('');
+    const [ nickName, setNickName ] = useState(extra.NickName);
+    const [isPopup, setIsPopup] = useState(false);
+    const [ img, setImg ] = useState();
+    const [ userInfo, setUserInfo ] = useState({});
+
+    const updateUserInfo = async () => {
+        
+        var formData = new FormData();
+        formData.append('MemberID', id);
+        formData.append('NickName', nickName);
+        formData.append('profile', userInfo.img);
+
+        const result = await axios({
+            url: serverURL + 'user/userInfo',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
+            },
+            method: 'put',
+            data: formData
+        });
+        const data = result.data;
+        let extra = data.info
+        if(data.status == 200) {
+            dispatch({
+                type: 'SET_EXTRA',
+                extra: extra
+            })
+    
+            setIsPopup(false);
+        }
+        navigation.navigate('MyPage', {});
+    }
+
+    const pickImg = () => {
+        const options = {
+            title: 'Select Avatar', //이미지 선택할 때 제목입니다 ( 타이틀 ) 
+            customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }], // 선택 버튼을 커스텀 할 수 있습니다.
+            storageOptions: {
+            skipBackup: true,	// ios인 경우 icloud 저장 여부 입니다!
+            path: 'images',
+            },
+        };
+        
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info in the API Reference)
+         */
+         launchImageLibrary(options, (response) => {        
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+            // You can also display the image using data:
+            // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+                let date = new Date().getTime();
+                setUserInfo({
+                    ...userInfo,
+                    img: { 
+                        name: date+id+".png", 
+                        type: 'image/png', 
+                        uri: response.assets[0].uri
+                    }
+                })
+                
+                setImg(response.assets[0].uri); // 저는 여기서 uri 값을 저장 시킵니다 !
+            }
+        });
+    }
 
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
+                <Popup 
+                    isPopup={isPopup} 
+                    setIsPopup={value => setIsPopup(value)} 
+                    modalText="수정 하시겠습니까?"
+                    onPressOK={() => updateUserInfo()}
+                />
                 <HeaderPopup
                     navigation={navigation}
                     title="프로필 수정"
                 />
                 <View style={styles.Content} >
-                    <Image source={require('./../assets/images/icons/login.png')} style={styles.joinProfileImg}/>
+                    <TouchableOpacity
+                        style={styles.joinProfileUploadImage}
+                        onPress={() => pickImg()}
+                    >
+                        <Image source={img ? {uri: img} : {uri: serverURL + extra.ProfilePath}} style={styles.joinProfileImg}  imageStyle={styles.userImageStyle}/> 
+                    </TouchableOpacity>
                     <View style={styles.joinInputView}>
                         <TextInput
                             style={styles.joinInput}
@@ -33,7 +121,7 @@ const ProfileUpdate = ({route, navigation}) => {
                         <TouchableOpacity 
                             activeOpacity={0.8} 
                             style={styles.submitButton} 
-                            onPress = { () => navigation.navigate('MyPage') }
+                            onPress = { () => setIsPopup(true) }
                         >
                             <Text style={styles.submitButtonText}>
                                 수정하기
@@ -72,7 +160,8 @@ const styles = StyleSheet.create({
         width:100,
         height:100,
         padding:15,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        borderRadius: 100
     },
     joinInputView: {
         borderWidth:1,
@@ -107,8 +196,9 @@ const styles = StyleSheet.create({
     }, 
     submitButtonText: {
       fontSize: 17,
-      color: 'white',
-      fontWeight: "500"
+      includeFontPadding:false,
+      fontFamily:'NotoSansKR-Regular',
+      color: '#FFFFFF',
     },
 });
 

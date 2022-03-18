@@ -1,19 +1,81 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderMenu from '../components/HeaderMenu'
 import Popup from '../components/Popup'
-import Accordion from 'react-native-collapsible/Accordion';
+import { Context } from './../context/index';
+import axios from 'axios';
+import { serverURL } from './../../config.json';
 
 const MyInfoUpdate = ({navigation}) => {
+    const { state: { uid, id, extra }, dispatch } = useContext( Context );
 
+    
+    const [message, setMessage] = useState({
+        text: '',
+        successText: ''
+    });
     const [isPopup, setIsPopup] = useState(false);
-    const [ nickName, setNickName ] = useState('');
-    const [ email, setEmail ] = useState('');
-    const updateUserInfo = () => {
+    const [ ckPw, setCkPw ] = useState('');
+    const [ pw, setPw ] = useState('');
+    const [ birth, setBirth ] = useState(extra.Birth);
+    const [ phone, setPhone ] = useState(extra.Phone);
+    const [ name, setName ] = useState(extra.Name);
+    const [ email, setEmail ] = useState(extra.Email);
+    const updateUserInfo = async () => {
         console.log('updateUserInfo');
+
+        if(pw && !pwRole(pw)) {
+            setMessage({text: '비밀번호는 영문,숫자, 특수문자를 혼합하여 8~20글자 이상 입력해주세요.'});
+            return;
+        }
+        if(pw && pw != pwCk) {
+            setMessage({text:'비밀번호를 확인 해주세요.'});
+            return;
+        }
+        if(!name || !birth || !phone || !email) {
+            setMessage({text:'비밀번호를 제외한 정보는 모두 입력해주세요.'});
+            return;
+        }
+
+        const result = await axios({
+            url: serverURL + 'user/userInfo',
+            headers: {
+                'Accept': 'application/json',
+            },
+            method: 'put',
+            data: {
+                MemberPW: pw,
+                Birth: birth,
+                Phone: phone,
+                Email: email,
+                Name: name,
+                MemberUID: uid
+            }
+        });
+        const data = result.data;
+        console.log(data)
+        if(data.status == 200) {
+            setMessage({text:'', successText: ''});
+            dispatch({
+                type: 'SET_EXTRA',
+                extra: data.info
+            });
+            navigation.goBack();
+        }
         setIsPopup(false);
+    }
+
+    const pwRole = (userPw) => {
+        let num = userPw.search(/[0-9]/g);
+        let eng = userPw.search(/[a-z]/ig);
+        let spe = userPw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+
+        if(num < 0 || eng < 0 || spe < 0 || userPw.length < 8){
+            return false;
+        }
+        return true;
     }
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
@@ -22,18 +84,56 @@ const MyInfoUpdate = ({navigation}) => {
                     isPopup={isPopup} 
                     setIsPopup={value => setIsPopup(value)} 
                     modalText="수정 하시겠습니까?"
-                    updateUserInfo={() => updateUserInfo()}
+                    onPressOK={() => updateUserInfo()}
                 />
-                <HeaderMenu navigation={navigation} title="마이페이지"/>
+                <HeaderMenu navigation={navigation} id={id} title="마이페이지"/>
                 <View style={[styles.Content]}>
                     <View style={[styles.userDataList]}>
                         <View style={styles.joinInputView}>
                             <TextInput
                                 style={styles.joinInput}
+                                placeholder={"수정할 비밀번호를 입력하세요."}
+                                placeholderTextColor = "#D5D5D5"
+                                onChangeText={ text => setPw(text) }
+                                value={pw}
+                                secureTextEntry = {true} 
+                            />
+                        </View>
+                        <View style={styles.joinInputView}>
+                            <TextInput
+                                style={styles.joinInput}
+                                placeholder={"비밀번호를 확인해주세요."}
+                                placeholderTextColor = "#D5D5D5"
+                                onChangeText={ text => setCkPw(text) }
+                                value={ckPw}
+                                secureTextEntry = {true} 
+                            />
+                        </View>
+                        <View style={styles.joinInputView}>
+                            <TextInput
+                                style={styles.joinInput}
+                                placeholder={"수정할 이름을 입력하세요."}
+                                placeholderTextColor = "#D5D5D5"
+                                onChangeText={ text => setName(text) }
+                                value={name}
+                            />
+                        </View>
+                        <View style={styles.joinInputView}>
+                            <TextInput
+                                style={styles.joinInput}
+                                placeholder={"수정할 생년월일을 입력하세요. ex)970525"}
+                                placeholderTextColor = "#D5D5D5"
+                                onChangeText={ text => setBirth(text) }
+                                value={birth}
+                            />
+                        </View>
+                        <View style={styles.joinInputView}>
+                            <TextInput
+                                style={styles.joinInput}
                                 placeholder={"수정할 연락처를 입력하세요."}
                                 placeholderTextColor = "#D5D5D5"
-                                onChangeText={ text => setNickName(text) }
-                                value={nickName}
+                                onChangeText={ text => setPhone(text) }
+                                value={phone}
                             />
                         </View>
                         <View style={styles.joinInputView}>
@@ -55,6 +155,14 @@ const MyInfoUpdate = ({navigation}) => {
                                     수정
                                 </Text>
                             </TouchableOpacity>
+                        </View>
+                        <View style={styles.messageView}>
+                            {message.text ? <Text style={styles.messageText}>
+                                {message.text}
+                            </Text> : null}
+                            {message.successText ? <Text style={styles.messageSuccessText}>
+                                {message.successText}
+                            </Text> : null}
                         </View>
                     </View>
                 </View>
@@ -176,5 +284,22 @@ const styles = StyleSheet.create({
         paddingTop:0,
         paddingBottom:0,
     },
+
+    messageView: {
+        marginTop: 20,
+        alignItems: 'center'
+    },
+    messageText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#ED1164',
+    },
+    messageSuccessText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#92D14F',
+    }
 });
 export default MyInfoUpdate;

@@ -1,23 +1,28 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { StyleSheet, ScrollView, View, Image, Text } from 'react-native';
 
 import Input from './../components/Input';
 import ImageButton from './../components/ImageButton';
 
 const SearchBox = (props) => {
+    const [searchText, setSearchText] = useState();
     return (
         <View style={[styles.View, styles.Shadow]} >
             <Input
                 styles={styles.Input}
                 InputStyle={styles.InputStyle}
                 placeholder={"검색 내용을 입력하세요."}
+                onChangeText={setSearchText}
             />
             <ImageButton
                 image={require('./../assets/images/icons/search.png')}
                 styles={styles.SearchButton}
                 onPress={() => {
                     console.log('search');
-                    // props.navigation.goBack()
+                    props.navigation.navigate('SearchPage', {
+                        text: searchText
+                    })
                 }}
             />
         </View>

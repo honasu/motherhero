@@ -1,112 +1,142 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import { Dimensions, StyleSheet, FlatList, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderMenu from '../components/HeaderMenu'
-import Accordion from 'react-native-collapsible/Accordion';
+import {AccordionList} from "accordion-collapse-react-native";
+import axios from 'axios';
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
+import Popup from './../components/Popup'
 
 const ServiceInfoCategory = ({navigation}) => {
+    const modalText = `로그인 후 이용하실 수 있습니다
+로그인 하시겠습니까?`;
+    const { state: { uid, id }, dispatch } = useContext( Context );
 
     const [babyList, setBabyList] = useState();
-    const [activeSections, setActiveSections] = useState([]);
+    const [activeSections, setActiveSections] = useState();
+    const [isPopup, setIsPopup] = useState(false);
+
+    const moveLoginPage = () => {
+        setIsPopup(false);
+        navigation.navigate('Login', {});
+    }
 
     useEffect(() => {
         babyList ? '' : getBabyList();
     }, [babyList])
 
     const setMoveButton = (data) => {
-        const result = []
-        for(let num in data) {
-            result.push(
+        return data.map((value, index) => 
+            (
                 <TouchableOpacity 
                     activeOpacity={0.8} 
-                    style={styles.applyButton} 
+                    style={[styles.applyButton]} 
                     onPress={ () => navigation.navigate('ServiceInfoList', {
-                        type: data[num].type,
-                        text: data[num].text.split(' ')[1],
+                        type: value.uid,
+                        text: value.name,
+                        mainCategory: value.mainCategory
                     })}
                 >
                     <Text style={styles.applyText}>
-                        {data[num].text}
+                        {'・ ' + value.name}
                     </Text>
                 </TouchableOpacity>
             )
-        }
-        return (
-        <View>
-            {result}
-        </View>
         );
     };
 
-    const getBabyList = () => {
-        const data = [
-            [{
-                text: '・ 심',
-                type: 'a'
-            },
-            {
-                text: '・ 심',
-                type: 'b'
-            },
-            {
-                text: '・ 해',
-                type: 'c'
-            }],
-            [{
-                text: '・ 이',
-                type: 'd'
-            },],
-            [{
-                text: '・ 삼',
-                type: 'e'
-            },],
-            [{
-                text: '・ 사',
-                type: 'f'
-            },],
-            [{
-                text: '・ 한부모가정지원사업',
-                type: 'g',
-                text: '・ 서민금융재단사업',
-                type: 'h'
-            },],
-        ]
+    const getBabyList = async () => {
+        const cate = [[], [], [], [], []];
+        const result = await axios({
+            url: serverURL + 'index/subCategory',
+            method: 'get',
+            params: {
+                BoardType: 'age',
+            }
+        });
+        const data = result.data;
+        if(data.info[0]) {
+            for(let index = 0; index < data.info.length; index++) {
+                let tmp = data.info[index]
+                switch(tmp.MainCategory) {
+                    case '임신 ・ 출산':
+                        cate[0].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                            mainCategory: '임신 ・ 출산',
+                        })
+                        break;
+                    case '영 ・ 유아':
+                        cate[1].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                            mainCategory: '영 ・ 유아',
+                        })
+                        break;
+                    case '아동':
+                        cate[2].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                            mainCategory: '아동',
+                        })
+                        break;
+                    case '청소년':
+                        cate[3].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                            mainCategory: '청소년',
+                        })
+                        break;
+                    case '기타':
+                        cate[4].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                            mainCategory: '기타',
+                        })
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         setBabyList([
             {
                 index : 0,
                 title : "임신 ・ 출산",
-                description : setMoveButton(data[0])
+                description : setMoveButton(cate[0])
             },
             {
                 index : 1,
                 title : "영 ・ 유아",
-                description : setMoveButton(data[1])
+                description : setMoveButton(cate[1])
             },
             {
                 index : 2,
                 title : "아동",
-                description : setMoveButton(data[2])
+                description : setMoveButton(cate[2])
             },
             {
                 index : 3,
-                title : "청소녕",
-                description : setMoveButton(data[3])
+                title : "청소년",
+                description : setMoveButton(cate[3])
             },
             {
                 index : 4,
                 title : "기타",
-                description : setMoveButton(data[4])
+                description : setMoveButton(cate[4])
             }  
         ]);
     }
 
     const renderHeader = (section) => {
         return (
-        <View style={[styles.Header, styles.Row]}>
-            <Text style={[styles.headerText]}>{section.title}</Text>
-            <Image style={[styles.HeaderArrow,]} source={(parseInt(section.index) == parseInt(activeSections)?require('./../assets/images/icon/up-arrow.png'):require('./../assets/images/icon/down-arrow.png'))}/>
-        </View>
+            <View style={[styles.Header, styles.Row]}>
+                <Text style={[styles.headerText]}>{section.title}</Text>
+                <Image style={[styles.HeaderArrow,]} source={(section.index == activeSections?require('./../assets/images/icons/up-arrow.png'):require('./../assets/images/icons/down-arrow.png'))}/>
+            </View>
         );
     }
 
@@ -122,22 +152,30 @@ const ServiceInfoCategory = ({navigation}) => {
 
     const appendBabyList = () => {
         return (
-        <ScrollView style={styles.Content}>
-            <Accordion
-                sections={babyList}
-                activeSections={activeSections}
-                renderHeader={renderHeader}
-                renderContent={renderContent}
-                onChange={setActiveSections}
+            <AccordionList 
+                style={styles.Content}
+                list={babyList}
+                header={renderHeader}
+                body={renderContent}
+                keyExtractor={item => item.index}
+                // onEndReached={onEndReached}
+                // expandedIndex={startIndex}
+                onToggle={(value) => value == activeSections ? setActiveSections() : setActiveSections(value)}
             />
-        </ScrollView>
         );
     }
 
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderMenu navigation={navigation} title="연령별 지원정보"/>
+                <HeaderMenu navigation={navigation} title="연령별 지원정보"
+                     id={id} setIsPopup={value => setIsPopup(value)}/>
+                <Popup 
+                    isPopup={isPopup} 
+                    setIsPopup={value => setIsPopup(value)} 
+                    modalText={modalText}
+                    onPressOK={() => moveLoginPage()}
+                />
                 {babyList ? appendBabyList() : <View></View>}
             </View>
         </SafeAreaView>

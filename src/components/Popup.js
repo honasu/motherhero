@@ -14,7 +14,7 @@ const Popup = props => {
     const isPopup = props.isPopup;
     const setIsPopup = props.setIsPopup;
     const modalText = props.modalText;
-    const updateUserInfo = props.updateUserInfo;
+    const onPressOK = props.onPressOK;
 
     return (
         <Modal transparent={true} visible={isPopup} onBackdropPress={() => {setIsPopup(false)}}>
@@ -27,7 +27,7 @@ const Popup = props => {
                     <View style={styles.modalButtonView}>
                         <TouchableHighlight 
                             style={[styles.modalButton, {backgroundColor: '#92D14F'}]} 
-                            onPress={() => {updateUserInfo()}}
+                            onPress={() => {onPressOK()}}
                         >
                             <Text style={[styles.modalButtonText, {color: '#FFFFFF'}]}>확인</Text>
                         </TouchableHighlight>
@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
     fontFamily:'NotoSansKR-Regular',
     color: '#191919',
     fontSize: 18,
-    margin:5
+    marginBottom: 10,
+    marginTop: 10
   },
   modalButtonView: {
     flexDirection: 'row'

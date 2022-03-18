@@ -14,7 +14,7 @@ const Selector = (props) => {
           defaultValueByIndex={props.defaultValueByIndex}
           renderDropdownIcon={(isOpened) => {
             return (
-              <Image style={styles.Image} source={(isOpened?require('./../assets/images/icon/up-arrow.png'):require("./../assets/images/icon/down-arrow.png"))} />
+              <Image style={styles.Image} source={(isOpened?require('./../assets/images/icons/up-arrow.png'):require("./../assets/images/icons/down-arrow.png"))} />
             );
           }}
           onSelect={(selectedItem, index) => {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         width:200,
         height:30,
         backgroundColor:'transparent',
-        borderWidth:1,
+        borderWidth:0,
         borderRadius:5,
         // marginBottom:10,
         // backgroundColor: 'white',
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
     rowTextStyle:{
         textAlign:'left',
-        fontSize:12
+        fontSize:12,
     },
 });
 

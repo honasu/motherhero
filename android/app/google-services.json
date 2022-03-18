@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "376132069574",
+    "firebase_url": "https://motherhero-d188d-default-rtdb.firebaseio.com",
+    "project_id": "motherhero-d188d",
+    "storage_bucket": "motherhero-d188d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376132069574:android:400b1400daa5bdf58a0fc7",
+        "android_client_info": {
+          "package_name": "com.hero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376132069574-edvh2u9o9di7m41una183pon8cqtp51h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsaXDbtZ3x17_wE_b1B-rvtrV6wdkQo44"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376132069574-edvh2u9o9di7m41una183pon8cqtp51h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

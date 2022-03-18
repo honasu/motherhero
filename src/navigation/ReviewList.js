@@ -1,117 +1,147 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, WebView } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import { Dimensions, StyleSheet, FlatList, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import HeaderSub from './../components/HeaderSub';
-import Selector from './../components/Selector';
-
+import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 
-const ReviewList = ({route, navigation}) => {
+import HeaderSub from './../components/HeaderSub';
+import Button from './../components/Button';
+import Popup from '../components/Popup'
+import ImageButton from './../components/ImageButton';
+import { serverURL } from './../../config.json';
+import { Context } from './../context/index';
 
-    const pageName = route.params.pageName;
-    
-    const [ReviewListData, setReviewListData] = useState();
+
+const ReviewList = ({route, navigation}) => {
+    const isFocused = useIsFocused();
+    const modalText = `로그인 후 이용하실 수 있습니다
+로그인 하시겠습니까?`;
+    const { state: { uid, id }, dispatch } = useContext( Context );
+
+    const [isPopup, setIsPopup] = useState(false);
+    const [reviewListData, setReviewListData] = useState([]);
+    const [pageName, setPageName] = useState(route.params.pageName);
+    const [MainCategory, setMainCategory] = useState(route.params.MainCategory);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
+
 
     useEffect(() => {
-        ReviewListData ? '' : getReviewListData();
-    }, [ReviewListData])
+        reviewListData[0] ? '' : getList();
+    }, [reviewListData])
 
-    const getReviewListData = async () => {
-        // let result = await axios({
-        //     url: 'http://localhost:3000/getQNAList',
-        //     method: 'get',
-        //     params: {
-        //         category: ''
-        //     }
-        // });
-        // setReviewListData(result.data);
-        let data = [{
-            uid: 5,
-            url: 'https://google.com',
-            title: '게시글5scklsjanflisnfbvlkenglernglaergnliekrgnlkergnlkergnl',
-            nicName:'user',
-            googleForm: 'https://google.com',
-            date: '2021-12-18 12:28:36',
-        }, 
-        {
-            uid: 4,
-            url: 'https://google.com',
-            title: '게시글4',
-            nicName:'useruser',
-            date: '2021-12-17 12:28:36'
-        }, 
-        {
-            uid: 3,
-            url: 'https://google.com',
-            title: '게시글3',
-            nicName:'user',
-            googleForm: 'https://google.com',
-            date: '2021-12-16 12:28:36'
-        }, 
-        {
-            uid: 2,
-            url: 'https://google.com',
-            title: '게시글2',
-            nicName:'user',
-            date: '2021-12-15 12:28:36'
-        }, 
-        {
-            uid: 1,
-            url: 'https://google.com',
-            title: '게시글1',
-            nicName:'user',
-            googleForm: 'https://google.com',
-            date: '2021-12-14 12:28:36'
-        }];
-        setReviewListData(data);
+    useEffect(() => {
+        if(route) {
+            if(route.params) {
+                if(route.params.reset) {
+                    resetPageData();
+                }
+            }
+        }
+    }, [isFocused])
+
+    const getList = async () => {
+        if(loading) return;
+        setLoading(true);
+
+        const result = await axios({
+            url: serverURL + 'index/board',
+            method: 'get',
+            params: {
+                page: page+1,
+                limit: 20,
+                BoardType: 'review',
+                MainCategory: MainCategory
+            }
+        });
+        const data = result.data;
+        if(data.info[0]) {
+            setPage(page+1);
+            if(data.status == 200) {
+                setReviewListData([...reviewListData, ...data.info]);
+            }
+            setLoading(false);
+        }
     }
 
-    const appendList = () => {
+    const renderItem = ({item}) => {
         return (
-            <ScrollView style={styles.Content}>
-                {ReviewListData.map((value, index) => 
-                    <TouchableOpacity style={styles.listContent} onPress={() => navigation.navigate('ReviewDetail', {
-                        pageName:pageName,
-                        data : value,
-                    })}>
-                        <Text style={styles.listTitle}>
-                            {value.title}
-                        </Text>
-                        <View style={styles.listWriteInfo}>
-                            <Text style={styles.listWriter}>
-                                {value.nicName}
-                            </Text>
-                            <Text style={styles.listDate}>
-                                {parseDate(value.date)}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
-            </ScrollView>
+            <TouchableOpacity 
+                style={styles.listContent} 
+                onPress={() => navigation.navigate('ReviewDetail', {
+                    BoardUID : item.BoardUID,
+            })}>
+                <Text style={styles.listTitle}>
+                    {item.BoardTitle}
+                </Text>
+                <View style={styles.listWriteInfo}>
+                    <Text style={styles.listWriter}>
+                        {item.NickName}
+                    </Text>
+                    <Text style={styles.listDate}>
+                        {parseDate(item.BoardDate)}
+                    </Text>
+                </View>
+            </TouchableOpacity>
         )
     }
 
-    const parseDate = (data) => {
-        let result = data.split(' ');
+    const parseDate = (boardDate) => {
+        boardDate = new Date(boardDate);
+        let onlyDate = `${boardDate.getFullYear()}.${(boardDate.getMonth()+1) < 10 ? '0' : '' }${(boardDate.getMonth()+1)}.${boardDate.getDate() < 10 ? '0' : ''}${boardDate.getDate()}`;
+        let onlyTime = `${(boardDate.getHours()) < 10 ? '0' : '' }${boardDate.getHours()}:${(boardDate.getMinutes()) < 10 ? '0' : '' }${boardDate.getMinutes()}:${boardDate.getSeconds() < 10 ? '0' : ''}${boardDate.getSeconds()}`;
         const d = new Date();
         const year = d.getFullYear(); 
         const month = d.getMonth() + 1; 
         const date = d.getDate(); 
         const today = `${year}.${month >= 10 ? month : '0' + month}.${date >= 10 ? date : '0' + date}`;
-        return result[0] == today ? result[1] : result[0];
+        return onlyDate == today ? onlyTime : onlyDate;
+    }
+    
+    const moveWritePage = () => {
+        id ? navigation.navigate('ReviewWrite', {
+            MainCategory: MainCategory
+        }) : setIsPopup(true)
+    }
+
+    const moveLoginPage = () => {
+        setIsPopup(false);
+        navigation.navigate('Login', {});
+    }
+
+    const resetPageData = (value) => {
+        setPage(0); 
+        setLoading(false); 
+        setReviewListData([]); 
     }
     
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
+                <Popup 
+                    isPopup={isPopup} 
+                    setIsPopup={value => setIsPopup(value)} 
+                    modalText={modalText}
+                    onPressOK={() => moveLoginPage()}
+                />
+                <ImageButton 
+                    image={require('./../assets/images/icons/writeBoard.png')}
+                    styles={[styles.writeButton]} 
+                    onPress={moveWritePage}
+                />
                 <HeaderSub
                     page='normal'
                     navigation={navigation}
                     title={pageName}
                 />
-                {ReviewListData ? appendList() : <View></View>}
+                <FlatList
+                    style={styles.Content}
+                    data={reviewListData}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.BoardUID}
+                    onEndReached={getList}
+                />  
             </View>
         </SafeAreaView>
     );
@@ -172,7 +202,15 @@ const styles = StyleSheet.create({
     listDate: {
         position: 'absolute',
         right:0
-    }
+    },
+    writeButton: {
+        width: 110,
+        height: 110,
+        position: 'absolute',
+        right: -15,
+        bottom: -15,
+        zIndex: 5
+    },
 });
 
 export default ReviewList;

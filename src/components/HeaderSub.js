@@ -17,7 +17,7 @@ const HeaderSub = (props) => {
                 placeholder={"검색 내용을 입력하세요."}
             /> */}
             <ImageButton
-                image={require('./../assets/images/icon/search-on.png')}
+                image={require('./../assets/images/icons/search-on.png')}
                 styles={[styles.SearchButton, (props.page=='search'?{display:'flex'}:{display:'none'})]}
                 onPress={() => props.navigation.goBack()}
             />
@@ -31,7 +31,7 @@ const HeaderSub = (props) => {
             <ImageButton
                 image={props.isOn ? require('./../assets/images/icons/favorite_on.png') : require('./../assets/images/icons/favorite_off.png')}
                 styles={[styles.FavorButton, (props.type=='favorite'?{display:'flex'}:{display:'none'})]}
-                onPress={() => props.navigation.goBack()}
+                onPress={() => props.clickFavorite()}
             />
         </View>
     );

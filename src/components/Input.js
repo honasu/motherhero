@@ -10,6 +10,8 @@ const Input = (props) => {
                 editable={(props.disabled?false:true)}
                 selectTextOnFocus={(props.disabled?false:true)}
                 placeholderTextColor = "#AAAAAA"
+                value={props.value}
+                onChangeText={props.onChangeText}
             />
         </View>
     );    

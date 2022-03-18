@@ -1,16 +1,18 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderMenu from '../components/HeaderMenu'
-import Accordion from 'react-native-collapsible/Accordion';
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
 
 const MyPage = ({navigation}) => {
-
+    const { state: { uid, id, extra }, dispatch } = useContext( Context );
+    
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderMenu navigation={navigation} title="마이페이지"/>
+                <HeaderMenu navigation={navigation}  id={id} title="마이페이지"/>
                 <View style={[styles.Content]}>
                     <View style={[styles.profileContent]}>
                         <TouchableOpacity
@@ -18,7 +20,7 @@ const MyPage = ({navigation}) => {
                                 navigation.navigate('ProfileUpdate')
                             }}
                         >
-                            <ImageBackground source={require('../assets/images/bannerCat1.jpeg')} style={styles.userImage} imageStyle={styles.userImageStyle}>
+                            <ImageBackground source={{uri: serverURL + extra.ProfilePath}} style={styles.userImage} imageStyle={styles.userImageStyle}>
                             </ImageBackground>
                         </TouchableOpacity>
                         <TouchableOpacity 
@@ -29,16 +31,16 @@ const MyPage = ({navigation}) => {
                         >
                             <View style={styles.userNameView}>
                                 <Text style={styles.userName}>
-                                    닉네이잉ㅁ
+                                    {extra.NickName}
                                 </Text>
                             </View>
                             <View style={styles.userNicknameView}>
                                 <Text style={styles.userNickname}>
-                                    이르으음
+                                    {extra.Name}
                                 </Text>
                             </View>
                             <Image
-                                source={require('../assets/images/icon/right-arrow.png')}
+                                source={require('../assets/images/icons/right-arrow.png')}
                                 style={styles.userArrow}
                             />
                         </TouchableOpacity>
@@ -47,10 +49,10 @@ const MyPage = ({navigation}) => {
                         <View style={[styles.mypageContentView]}>
                             <TouchableOpacity 
                                 style={[styles.mypageContent]}
-                                onPress={() => navigation.navigate('Notice')}
+                                onPress={() => navigation.navigate('Notice', {})}
                             >
                                 <Image
-                                    source={require('../assets/images/icon/notice_mypage.png')}
+                                    source={require('../assets/images/icons/notice_mypage.png')}
                                     style={styles.mypageContentImage}
                                 />
                                 <Text style={styles.mypageContentText}>
@@ -59,10 +61,10 @@ const MyPage = ({navigation}) => {
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={[styles.mypageContent]}
-                                onPress={() => navigation.navigate('Review')}
+                                onPress={() => navigation.navigate('Review', {})}
                             >
                                 <Image
-                                    source={require('../assets/images/icon/review_mypage.png')}
+                                    source={require('../assets/images/icons/review_mypage.png')}
                                     style={styles.mypageContentImage}
                                 />
                                 <Text style={styles.mypageContentText}>
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
         fontFamily:'NotoSansKR-Medium',
         color: '#191919',
         fontSize: 12,
-        marginTop: 5
+        marginTop: 10
     },
     userInfoView: {
       flex:1,
@@ -169,8 +171,8 @@ const styles = StyleSheet.create({
         // alignItems: 'center'
     },
     userImage: {
-      width: 80,
-      height: 80,
+      width: 70,
+      height: 70,
       marginRight: 10
     },
     userImageStyle: {

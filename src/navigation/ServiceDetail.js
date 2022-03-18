@@ -1,16 +1,45 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, View} from 'react-native';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { Dimensions, StyleSheet, View, Platform, Image, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
+// import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from'react-native-fs';
 
-import Button from '../components/Button';
-import HeaderPopup from '../components/HeaderPopup';
-import Selector from '../components/Selector';
+import Button from './../components/Button';
+import HeaderPopup from './../components/HeaderPopup';
+import Popup from './../components/Popup'
+
+import { Context } from './../context/index';
+import { webURL } from './../../config.json';
 
 const ServiceDetail = ({route, navigation}) => {
+    const modalText = `로그인 후 이용하실 수 있습니다
+로그인 하시겠습니까?`;
+    const { state: { uid, id }, dispatch } = useContext( Context );
+    let url = webURL + 'listBoard.html';
+    let [BoardUID, setBoardUID] = useState(route.params.boardUID);
+    const [isPopup, setIsPopup] = useState(false);
 
     const [headerInfo, setHeaderInfo] = useState(route.params); //type, text
+
+    const moveLoginPage = () => {
+        setIsPopup(false);
+        navigation.navigate('Login', {});
+    }
+    
+    const onPressAppendButton = () => {
+        if(id) {
+            navigation.navigate('ServiceApply', {
+                ...headerInfo,
+                boardUID: BoardUID,
+                googleForm: route.params.googleForm,
+            })
+        }
+        else {
+            setIsPopup(true);
+        }
+    }
 
     const appendButton = () => {
         return (
@@ -18,12 +47,55 @@ const ServiceDetail = ({route, navigation}) => {
                 styles={styles.appendButtonStyle} 
                 title='신청하기'
                 TextStyle={styles.appendButtonTextStyle}
-                onPress={() => {navigation.navigate('ServiceApply', {
-                    ...headerInfo
-                })}} 
+                onPress={onPressAppendButton} 
             />
         );
     }
+
+    let webviewRef = useRef();
+
+    /** 웹뷰 ref */
+    const handleSetRef = _ref => {
+      webviewRef = _ref;
+    };
+
+    const reload = () => {
+        webviewRef.reload();
+    }
+
+    const handleOnMessage = async (message) => {
+        const { nativeEvent } = message;
+        const data = JSON.parse(nativeEvent.data);
+        if(data.type == 'fin') {
+            navigation.goBack();      
+        }
+        if(data.type == 'downloadFile') {
+            console.log(data)
+            const dirs = RNFS.DocumentDirectoryPath
+            const homePath = dirs + '/' + data.name
+
+            let down = await RNFS.downloadFile({
+                fromUrl: data.path,
+                toFile: homePath,
+              })
+            //   console.log(homePath)
+            //   setImg({ "uri" : homePath })
+            }
+    };
+
+    const handleEndLoading = e => {
+        console.log("handleEndLoading");
+        /** rn에서 웹뷰로 정보를 보내는 메소드 */
+        webviewRef.postMessage( JSON.stringify({
+            type: "pageInfo",
+            data: {
+                MemberID: id,
+                BoardUID: BoardUID,
+                BoardType: 'age',
+                OS: Platform.OS
+            }
+        }));
+    };
 
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
@@ -32,7 +104,22 @@ const ServiceDetail = ({route, navigation}) => {
                     navigation={navigation}
                     title={headerInfo ? headerInfo.text : ''}
                 />
-                <WebView style={styles.Content} source={{ uri: route.params.url }} />
+                <Popup 
+                    isPopup={isPopup} 
+                    setIsPopup={value => setIsPopup(value)} 
+                    modalText={modalText}
+                    onPressOK={() => moveLoginPage()}
+                />
+                <WebView 
+                    // ref={}
+                    style={{marginTop:70, flex:1}} 
+                    source={{ uri: url }} 
+                    ref={handleSetRef}
+                    incognito={true} //캐시 비우기
+                    javaScriptEnabled={true}
+                    onLoadEnd={handleEndLoading}
+                    onMessage={handleOnMessage}
+                />
                 {route.params.googleForm ? appendButton() : <View></View>}
             </View>
         </SafeAreaView>

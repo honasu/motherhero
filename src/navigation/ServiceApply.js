@@ -1,18 +1,26 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 
 import ServiceApplyContent from './../components/ServiceApplyContent';
 import Button from './../components/Button';
 import HeaderPopup from './../components/HeaderPopup';
 
+import { serverURL } from './../../config.json';
+import { Context } from './../context/index';
 
 const ServiceApply = ({ route, navigation }) => {
+    const { state: { uid, id }, dispatch } = useContext( Context );
 
+    const [message, setMessage] = useState({
+        text: '',
+        successText: ''
+    });
     const [googleForm, setGoogleForm] = useState();
+    const [boardUID, setBoardUID] = useState();    
     const [page, setPage] = useState(1);
     const [isAble, setIsAble] = useState(false);
     const [seconedPageInfo, setSeconedPageInfo] = useState([]);
-    const [asdf, setasdf] = useState([]);
     const [headerInfo, setHeaderInfo] = useState(route.params); //type, text
     
     useEffect(() => {
@@ -21,13 +29,33 @@ const ServiceApply = ({ route, navigation }) => {
 
     const getGoogleForm = () => {
         setGoogleForm(route.params.googleForm)
+        setBoardUID(route.params.boardUID)
     }
 
 
     const nextPage = () => {
         if(page == 2) {
-            console.log(seconedPageInfo)
+            if(!seconedPageInfo.length) {
+                setMessage({text: '파일을 등록해주세요.'});
+            }
+            var formData = new FormData();
+            formData.append('MemberID', id);
+            formData.append('BoardUID', boardUID);
+            for(let index = 0; index < seconedPageInfo.length; index++) {
+                let applyFile = seconedPageInfo[index];
+                formData.append('applyFile', applyFile);
+            }
             //서버에 등록 첨부서류 올리기
+            const result = axios({
+                url: serverURL + 'index/applyFile',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'multipart/form-data'
+                },
+                method: 'post',
+                data: formData
+            });
+            const data = result.data;
         }
 
         if(page == 3) {
@@ -48,7 +76,6 @@ const ServiceApply = ({ route, navigation }) => {
             data ? setIsAble(true) : setIsAble(false);
         }
         if(page == 2) {
-            // setasdf([1])
             let temp = data;
             setSeconedPageInfo([...data]);
         }
@@ -87,6 +114,7 @@ const ServiceApply = ({ route, navigation }) => {
                     seconedPageInfo={seconedPageInfo} 
                     onChange={(data) => onChange(data)}
                     navigation={navigation}
+                    setMessage={setMessage}
                 />
 
                 <View style={styles.submitButtonView}>
@@ -98,6 +126,14 @@ const ServiceApply = ({ route, navigation }) => {
                         TextStyle={styles.submitButtonText}
                     >
                     </Button>
+                </View>
+                <View style={styles.messageView}>
+                    {message.text ? <Text style={styles.messageText}>
+                        {message.text}
+                    </Text> : null}
+                    {message.successText ? <Text style={styles.messageSuccessText}>
+                        {message.successText}
+                    </Text> : null}
                 </View>
             </View>
         </SafeAreaView>
@@ -140,6 +176,22 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color:'#FFFFFF',
     },
+    messageView: {
+        marginTop: 20,
+        alignItems: 'center'
+    },
+    messageText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#ED1164',
+    },
+    messageSuccessText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#92D14F',
+    }
 });
 
 export default ServiceApply;

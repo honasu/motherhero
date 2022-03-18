@@ -1,60 +1,108 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
+import axios from 'axios';
 
 import HeaderSub from '../components/HeaderSub';
 import Selector from '../components/Selector';
 
-const BabyInfo = ({route, navigation}) => {
+import { Context } from './../context/index';
+import { serverURL, webURL } from './../../config.json';
 
+const BabyInfo = ({route, navigation}) => {
+    const { state: { uid, id }, dispatch } = useContext( Context );
+
+    let MemberID = id;
+    let url = webURL + 'listBoard.html';
     const [headerInfo, setHeaderInfo] = useState(route.params); //type, text
     const [selectorList, setSelectorList] = useState();
     const [selectItem, setSelectItem] = useState();
     const [urlList, setUrlList] = useState();
-    const [activeSections, setActiveSections] = useState([]);
+    const [activeSections, setActiveSections] = useState();
 
     useEffect(() => {
         selectorList ? '' : getSelectorList();
     }, [selectorList, headerInfo, selectItem])
 
-    const getSelectorList = () => {
-        //todo axios, headerInfo.type
-        const data = [{
-            name: '1a',
-            url:'1asdf'
-        }, 
-        {
-            name: '2b',
-            url:'2asdf'
-        }, 
-        {
-            name: '3c',
-            url:'3asdf'
-        }, 
-        {
-            name: '4d',
-            url:'4asdf'
-        }, 
-        {
-            name: '5e',
-            url:'5asdf'
-        }];
-        const name = data.map(value => value.name);
-        const url = data.map(value => value.url);
-        setSelectorList(name);
-        setUrlList(url);
-        setSelectItem(0);
+    let webviewRef = useRef();
+
+    /** 웹뷰 ref */
+    const handleSetRef = _ref => {
+      webviewRef = _ref;
+    };
+
+    const reload = () => {
+        webviewRef.reload();
+    }
+
+    const handleOnMessage = (message) => {
+        console.log('handleOnMessage');
+        const { nativeEvent } = message;
+        const data = JSON.parse(nativeEvent.data);
+        if(data.type == 'fin') {
+            navigation.goBack();      
+        }
+    };
+
+    const handleEndLoading = e => {
+        console.log("handleEndLoading");
+        /** rn에서 웹뷰로 정보를 보내는 메소드 */
+        webviewRef.postMessage( JSON.stringify({
+            type: "pageInfo",
+            data: {
+                MemberID: MemberID,
+                BoardUID: urlList[selectItem],
+                BoardType: 'baby'
+            }
+        }));
+    };
+    const getSelectorList = async () => {
+
+        const result = await axios({
+            url: serverURL + 'index/board',
+            method: 'get',
+            params: {
+                page:1,
+                limit:100,
+                SubCategoryUID: headerInfo.type
+            }
+        });
+        const data = result.data;
+        if(data.info[0]) {
+            const name = data.info.map(value => value.BoardTitle);
+            const url = data.info.map(value => value.BoardUID);
+            setSelectorList(name);
+            setUrlList(url);
+            setSelectItem(0);
+        }
     }
 
     const appendWebView = () => {
-        console.log('appendWebView');
-        console.log(urlList[selectItem]);
-        //todo WebView
-
-        // <WebView source={{ uri: 'https://dorm.pusan.ac.kr/dorm/function/mealPlan/20000403' }} />
+        return <WebView 
+        // ref={}
+        source={{ uri: url }} 
+        ref={handleSetRef}
+        incognito={true} //캐시 비우기
+        javaScriptEnabled={true}
+        onLoadEnd={handleEndLoading}
+        onMessage={handleOnMessage}
+        />
         
+    }
+
+    const onSelect = (value) => {
+        setSelectItem(value);
+
+        webviewRef.postMessage( JSON.stringify({
+            type: "pageInfo",
+            data: {
+                MemberID: MemberID,
+                BoardUID: urlList[selectItem],
+                BoardType: 'baby'
+            }
+        }));
     }
 
     const appendSelector = () => {
@@ -63,7 +111,7 @@ const BabyInfo = ({route, navigation}) => {
                 <Selector
                     data={selectorList}
                     defaultValueByIndex="0"
-                    onSelect={(value) => {setSelectItem(value)}}
+                    onSelect={(value) => {onSelect(value);}}
                     SelectAreaStyle={styles.SelectAreaStyle}
                 />
             </View>

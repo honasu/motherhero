@@ -11,7 +11,7 @@ const ListHeaderView = (props) => {
             <Text style={styles.title}>
                 {title}
             </Text>
-            <TouchableOpacity activeOpacity={0.8} style={styles.moveButton} onPress={ () => navigation.navigate(movePage) }>
+            <TouchableOpacity activeOpacity={0.8} style={styles.moveButton} onPress={ () => navigation.navigate(movePage, {}) }>
                 <Image source={require('./../assets/images/icons/plus.png')} style={styles.moveImg}/>
             </TouchableOpacity>
         </View>

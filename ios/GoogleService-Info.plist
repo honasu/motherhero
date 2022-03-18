@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>376132069574-51gf0nlgh5e9cfvjedj2qo0qpmlur6p3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.376132069574-51gf0nlgh5e9cfvjedj2qo0qpmlur6p3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCO4hgujwPkNTJCd704Tg1lztx_Q1VxW0U</string>
+	<key>GCM_SENDER_ID</key>
+	<string>376132069574</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.dmonster.motherhero001</string>
+	<key>PROJECT_ID</key>
+	<string>motherhero-d188d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>motherhero-d188d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:376132069574:ios:6a0a97e495695ce08a0fc7</string>
+	<key>DATABASE_URL</key>
+	<string>https://motherhero-d188d-default-rtdb.firebaseio.com</string>
+	<key>aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>

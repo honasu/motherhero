@@ -5,12 +5,13 @@ import ImageButton from './../components/ImageButton';
 
 const HeaderMenu = (props) => {
 
-  let userId = '1';
+  let userId = props.id || '';
 
   const iconList = [
       require('./../assets/images/icons/alram_white.png'),
-      require('./../assets/images/icons/maypage_white.png'),
-      require('./../assets/images/icons/menu_white.png')
+      require('./../assets/images/icons/mypage_white.png'),
+      require('./../assets/images/icons/menu_white.png'),
+      require('./../assets/images/icons/home_white.png')
   ]
   return (
       <View style={[styles.View, styles.Shadow]}>
@@ -19,12 +20,17 @@ const HeaderMenu = (props) => {
               styles={[styles.HeaderButton, styles.icon]}
               onPress={() => props.navigation.openDrawer()}
           />
+          <ImageButton
+              image={iconList[3]} 
+              styles={[styles.HeaderHomeButton, styles.icon]}
+              onPress={() => props.navigation.navigate('Main')}
+          />
           <Text style={styles.HeaderText}>{props.title}</Text>
           <View style={styles.buttonView}>
               <ImageButton
                   image={iconList[0]}
                   styles={[styles.rightHeaderButton, styles.icon]}
-                  onPress={() => props.navigation.navigate('Push')}
+                  onPress={() => userId ? props.navigation.navigate('Push') : props.setIsPopup(true)}
               />
               <ImageButton
                   image={iconList[1]}
@@ -67,17 +73,25 @@ const styles = StyleSheet.create({
   HeaderText:{
     includeFontPadding:false,
     fontFamily:'NotoSansKR-Regular',
-    fontSize: 22,
+    fontSize: 18,
     color:'#FFFFFF',
     marginRight:10
   },
   HeaderButton:{
-    width:30,
-    height:30,
+    width:25,
+    height:25,
     paddingLeft:0,
     paddingRight:0,
     position: 'absolute',
     left: 20,
+  },
+  HeaderHomeButton:{
+    width:28,
+    height:28,
+    paddingLeft:0,
+    paddingRight:0,
+    position: 'absolute',
+    left: 55,
   },
   buttonView: {
     position: 'absolute',
@@ -85,8 +99,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   rightHeaderButton: {
-    width:30,
-    height:30,
+    width:25,
+    height:25,
     paddingLeft:0,
     paddingRight:0,
     marginLeft:10,

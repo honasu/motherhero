@@ -1,6 +1,7 @@
 
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Linking } from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import CheckBox from './CheckBox';
 import ImageButton from './ImageButton';
@@ -12,6 +13,7 @@ const ServiceApplyContent = (props) => {
     let googleForm = props.googleForm;
     let navigation = props.navigation;
     let seconedPageInfo = props.seconedPageInfo;
+    let setMessage = props.setMessage;
 
     const [uploadFile, setUploadFile] = useState({});
 
@@ -29,14 +31,53 @@ const ServiceApplyContent = (props) => {
     
     const appendFileText = () => {
         return (
-            <TouchableOpacity style={styles.inputFile} onPress={ () => {
-                setUploadFile({file:'file', name:'asdsadsadsadsadasdsadsadasdsdasdasdasdasdsad'});
-            }}>
+            <TouchableOpacity style={styles.inputFile} onPress={ () => { pickImg() }}>
                 <Text style={[styles.fileText, ( uploadFile.file ? styles.fileUploaded : styles.fileEmpty )]}>
                     { uploadFile.file ? uploadFile.name : '업로드할 파일 선택' }
                 </Text>
             </TouchableOpacity>
         );
+    }
+
+    const pickImg = () => {
+        const options = {
+            title: 'Select Avatar', //이미지 선택할 때 제목입니다 ( 타이틀 ) 
+            customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }], // 선택 버튼을 커스텀 할 수 있습니다.
+            storageOptions: {
+            skipBackup: true,	// ios인 경우 icloud 저장 여부 입니다!
+            path: 'images',
+            },
+        };
+        
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info in the API Reference)
+         */
+         launchImageLibrary(options, (response) => {        
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+            // You can also display the image using data:
+                let type = response.assets[0].type;
+                if(type.indexOf('jpg') != -1 || type.indexOf('jpeg') != -1 || type.indexOf('png') != -1) {
+                    let date = new Date().getTime();
+                    console.log(response)
+                    setUploadFile({file:{ 
+                        name: date+'_'+response.assets[0].fileName, 
+                        type: type, 
+                        uri: response.assets[0].uri
+                    }, name:response.assets[0].fileName});
+                }
+                else {
+                    setMessage({text: 'jpg, jpeg, png 파일을 업로드해주세요.',
+                    successText: ''})
+                }
+            }
+        });
     }
 
     const addFile = () => {
@@ -61,8 +102,9 @@ const ServiceApplyContent = (props) => {
         return (
             <View style={{marginTop:20, width: 250}}>
                 {seconedPageInfo.map((value, index) => 
+                    
                     <View style={styles.fileListView}>                        
-                        <Text style={styles.fileListName} numberOfLines={1}>{value}</Text>
+                        <Text style={styles.fileListName} numberOfLines={1}>{value.name.split('_').slice(1).join('_')}</Text>
                         <Button 
                             styles={styles.removeFileButton} 
                             onPress = { () => removeFile(index-1) }

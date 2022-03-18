@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { SafeAreaView, Image, StyleSheet, View, Text, TextInput, Button, TouchableOpacity, ImageBackground } from 'react-native';
+import {useContext} from 'react';
+import { SafeAreaView, Image, StyleSheet, View, Text, TextInput, Button, TouchableOpacity, ImageBackground, Linking } from 'react-native';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
@@ -7,7 +8,23 @@ import {
     DrawerItem,
   } from '@react-navigation/drawer'; 
 
+  
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
+
 const CustomDrawerContent = (props) => {
+  
+  const { state: { uid, id, extra }, dispatch } = useContext( Context );
+  const logout = () => {
+    dispatch({
+      type: 'SET_UID',
+      uid: '',
+      id: '',
+      extra: ''
+    });
+    props.navigation.navigate('Main', {});
+  }
+
     return (
       <SafeAreaView style={styles.SafeAreaView}>
         <DrawerContentScrollView
@@ -17,24 +34,37 @@ const CustomDrawerContent = (props) => {
         >
           <TouchableOpacity 
             style={styles.headerView}
-            onPress={() => props.navigation.navigate('MyPage')}
+            onPress={() => id ? props.navigation.navigate('MyPage') : props.navigation.navigate('Login')}
           >
-            <ImageBackground source={require('../assets/images/bannerCat1.jpeg')} style={styles.userImage} imageStyle={styles.userImageStyle}>
+            <ImageBackground source={id ? {uri: serverURL + extra.ProfilePath} : require('./../assets/images/icons/headerLoginDefault.png')} style={styles.userImage} imageStyle={styles.userImageStyle}>
             </ImageBackground>
+            {id ? 
             <View style={styles.userInfoView}>
                 <View style={styles.userNameView}>
                   <Text style={styles.userName}>
-                    김사랑
+                    {extra.Name}
                   </Text>
                 </View>
                 <View style={styles.userNicknameView}>
                   <Text style={styles.userNickname}>
-                    KimHeart@
+                    {extra.NickName}
                   </Text>
                 </View>
-            </View>
-          </TouchableOpacity>
+            </View> :
+            <View style={styles.headerLoginTextView}>
+              <Text style={styles.headerLoginText}>
+                로그인이 필요합니다.
+              </Text>
+            </View>}
+          </TouchableOpacity> 
           
+          <TouchableOpacity 
+            style={styles.contentItem}
+            onPress={() => props.navigation.navigate('Main')}
+          >              
+            <Image source={require('../assets/images/icons/sidemain.png')} style={styles.contentImg}/>
+            <Text style={styles.contentText}>메인</Text>
+          </TouchableOpacity>
           <TouchableOpacity 
             style={styles.contentItem}
             onPress={() => props.navigation.navigate('BabyCategory')}
@@ -47,7 +77,7 @@ const CustomDrawerContent = (props) => {
             onPress={() => props.navigation.navigate('ServiceInfoCategory')}
           >              
             <Image source={require('../assets/images/icons/side2.png')} style={styles.contentImg}/>
-            <Text style={styles.contentText}>연령별 지원정보</Text>
+            <Text style={styles.contentText}>지원서비스 정보</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.contentItem}
@@ -65,18 +95,25 @@ const CustomDrawerContent = (props) => {
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.contentItem}
-            onPress={() => props.navigation.navigate('MotherList')}
+            onPress={() => props.navigation.navigate('MotherList', {})}
           >              
             <Image source={require('../assets/images/icons/side5.png')} style={styles.contentImg}/>
             <Text style={styles.contentText}>나눔마켓</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.contentItem}
-            onPress={() => props.navigation.navigate('Main')}
+            onPress={() => Linking.openURL('http://kkoom.or.kr')}
           >              
-            <Image source={require('../assets/images/bannerCat3.jpeg')} style={styles.contentImg}/>
-            <Text style={styles.contentText}>메인으로!(임시)</Text>
+            <Image source={require('../assets/images/icons/sideLogo.png')} style={styles.sideLogo}/>
+            {/* <Text style={styles.contentText}>꿈꾸는가게</Text> */}
           </TouchableOpacity>
+          {id ? <TouchableOpacity 
+            style={styles.contentItem}
+            onPress={() => logout()}
+          >              
+            {/* <Image source={require('../assets/images/icons/side5.png')} style={styles.contentImg}/> */}
+            <Text style={[styles.contentText, {color:'#ED1164', marginLeft:10}]}>로그아웃</Text>
+          </TouchableOpacity> : null }
         </DrawerContentScrollView>
 
       </SafeAreaView>
@@ -99,6 +136,17 @@ const styles = StyleSheet.create({
       alignContent: 'center',
       padding: 15,
   },
+  headerLoginTextView: {
+    flex:1,
+    height: 80,
+    justifyContent: 'center'
+  },
+  headerLoginText: {
+    includeFontPadding:false,
+    fontFamily:'NotoSansKR-Medium',
+    color: '#EEF5DC',
+    fontSize: 15,
+  },
   userInfoView: {
     flex:1,
     height: 80,
@@ -110,7 +158,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     includeFontPadding:false,
-    fontFamily:'NotoSansKR-Regular',
+    fontFamily:'NotoSansKR-Medium',
     color: '#EEF5DC',
     fontSize: 20,
   },
@@ -119,21 +167,21 @@ const styles = StyleSheet.create({
   },
   userNickname: {
     includeFontPadding:false,
-    fontFamily:'NotoSansKR-Regular',
+    fontFamily:'NotoSansKR-Medium',
     color: '#EEF5DC',
     fontSize: 13
   },
   userImage: {
-    width: 80,
-    height: 80,
-    marginRight: 10
+    width: 70,
+    height: 70,
+    marginRight: 10,
   },
   userImageStyle: {
-    borderRadius: 90
+    borderRadius: 90,
   },
   contentItem: {
     flexDirection: 'row',
-    height: 80,
+    height: 60,
     borderBottomColor: '#DCDCDC',
     borderBottomWidth: 1,
     alignContent: 'center',
@@ -147,11 +195,18 @@ const styles = StyleSheet.create({
       marginLeft:5,
       resizeMode: 'contain',
   },
+  sideLogo: {
+    width: 100,
+    height: 30,
+    marginRight:5,
+    marginLeft:5,
+    resizeMode: 'contain',
+  },
   contentText: {
     fontSize: 18,
     textAlign:'center',
     includeFontPadding:false,
-    fontFamily:'NotoSansKR-Regular',
+    fontFamily:'NotoSansKR-Medium',
     color: '#191919'
   },
 })

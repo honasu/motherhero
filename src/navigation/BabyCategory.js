@@ -1,17 +1,31 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import { Dimensions, StyleSheet, FlatList, View, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderMenu from '../components/HeaderMenu'
-import Accordion from 'react-native-collapsible/Accordion';
+import {AccordionList} from "accordion-collapse-react-native";
+import axios from 'axios';
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
+import Popup from './../components/Popup'
+
 
 const BabyCategory = ({navigation}) => {
+    const modalText = `로그인 후 이용하실 수 있습니다
+로그인 하시겠습니까?`;
+    const { state: { uid, id }, dispatch } = useContext( Context );
 
-    const [babyList, setBabyList] = useState();
-    const [activeSections, setActiveSections] = useState([]);
+    const [babyList, setBabyList] = useState([]);
+    const [activeSections, setActiveSections] = useState();
+    const [isPopup, setIsPopup] = useState(false);
+
+    const moveLoginPage = () => {
+        setIsPopup(false);
+        navigation.navigate('Login', {});
+    }
 
     useEffect(() => {
-        babyList ? '' : getBabyList();
+        babyList[0] ? '' : getBabyList();
     }, [babyList])
 
     const setMoveButton = (data) => {
@@ -21,74 +35,114 @@ const BabyCategory = ({navigation}) => {
                     activeOpacity={0.8} 
                     style={[styles.applyButton]} 
                     onPress={ () => navigation.navigate('BabyInfo', {
-                        type: value.type,
-                        text: value.text.split(' ')[1],
+                        type: value.uid,
+                        text: value.name,
                     })}
                 >
                     <Text style={styles.applyText}>
-                        {'・ ' + value.text}
+                        {'・ ' + value.name}
                     </Text>
                 </TouchableOpacity>
             )
         );
     };
 
-    const getBabyList = () => {
-        const data = [
-            [{
-                text: '심',
-                type: 'a'
-            },
-            {
-                text: '심',
-                type: 'b'
-            },
-            {
-                text: '해',
-                type: 'c'
-            }],
-            [{
-                text: '이',
-                type: 'd'
-            },],
-            [{
-                text: '삼',
-                type: 'e'
-            },],
-            [{
-                text: '사',
-                type: 'f'
-            },],
-            [{
-                text: '오',
-                type: 'g'
-            },],
-        ]
+    const getBabyList = async () => {
+        const cate = [[], [], [], [], [], [], []];
+        const result = await axios({
+            url: serverURL + 'index/subCategory',
+            method: 'get',
+            params: {
+                BoardType: 'baby',
+            }
+        });
+        const data = result.data;
+        if(data.info[0]) {
+            for(let index = 0; index < data.info.length; index++) {
+                let tmp = data.info[index]
+                switch(tmp.MainCategory) {
+                    case '임신':
+                        cate[0].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    case '태교':
+                        cate[1].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    case '출산준비':
+                        cate[2].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    case '산후조리':
+                        cate[3].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    case '육아':
+                        cate[4].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    case '부모교육':
+                        cate[5].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    case '시설입소정보':
+                        cate[6].push({
+                            uid: tmp.SubCategoryUID,
+                            name: tmp.SubCategoryName,
+                        })
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
         setBabyList([
             {
                 index : 0,
                 title : "임신",
-                description : setMoveButton(data[0])
+                description : setMoveButton(cate[0])
             },
             {
                 index : 1,
                 title : "태교",
-                description : setMoveButton(data[1])
+                description : setMoveButton(cate[1])
             },
             {
                 index : 2,
                 title : "출산준비",
-                description : setMoveButton(data[2])
+                description : setMoveButton(cate[2])
             },
             {
                 index : 3,
                 title : "산후조리",
-                description : setMoveButton(data[3])
+                description : setMoveButton(cate[3])
             },
             {
                 index : 4,
-                title : "시설 입소 정보",
-                description : setMoveButton(data[4])
+                title : "육아",
+                description : setMoveButton(cate[4])
+            },
+            {
+                index : 5,
+                title : "부모교육",
+                description : setMoveButton(cate[5])
+            },
+            {
+                index : 6,
+                title : "시설입소정보",
+                description : setMoveButton(cate[6])
             }  
         ]);
     }
@@ -97,14 +151,14 @@ const BabyCategory = ({navigation}) => {
         return (
         <View style={[styles.Header, styles.Row]}>
             <Text style={[styles.headerText]}>{section.title}</Text>
-            <Image style={[styles.HeaderArrow,]} source={(parseInt(section.index) == parseInt(activeSections)?require('./../assets/images/icon/up-arrow.png'):require('./../assets/images/icon/down-arrow.png'))}/>
+            <Image style={[styles.HeaderArrow,]} source={(section.index == activeSections?require('./../assets/images/icons/up-arrow.png'):require('./../assets/images/icons/down-arrow.png'))}/>
         </View>
         );
     }
 
     const renderContent = (section) => {
         return (
-        <View style={[styles.Item, ]}>
+        <View style={[styles.Item]}>
             <View>
                 {section.description}
             </View>
@@ -114,22 +168,30 @@ const BabyCategory = ({navigation}) => {
 
     const appendBabyList = () => {
         return (
-        <ScrollView style={styles.Content}>
-            <Accordion
-                sections={babyList}
-                activeSections={activeSections}
-                renderHeader={renderHeader}
-                renderContent={renderContent}
-                onChange={setActiveSections}
+            <AccordionList 
+                style={styles.Content}
+                list={babyList}
+                header={renderHeader}
+                body={renderContent}
+                keyExtractor={item => item.index}
+                // onEndReached={onEndReached}
+                // expandedIndex={startIndex}
+                onToggle={(value) => value == activeSections ? setActiveSections() : setActiveSections(value)}
             />
-        </ScrollView>
-        );
+        )
     }
 
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderMenu navigation={navigation} title="육아 정보"/>
+                <HeaderMenu navigation={navigation} title="육아 정보"
+                     id={id} setIsPopup={value => setIsPopup(value)}/>
+                <Popup 
+                    isPopup={isPopup} 
+                    setIsPopup={value => setIsPopup(value)} 
+                    modalText={modalText}
+                    onPressOK={() => moveLoginPage()}
+                />
                 {babyList ? appendBabyList() : <View></View>}
             </View>
         </SafeAreaView>

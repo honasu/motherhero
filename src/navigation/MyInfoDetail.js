@@ -1,26 +1,29 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderMenu from '../components/HeaderMenu'
-import Accordion from 'react-native-collapsible/Accordion';
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
 
 const MyInfoDetail = ({navigation}) => {
 
+    const { state: { uid, id, extra }, dispatch } = useContext( Context );
+    
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderMenu navigation={navigation} title="마이페이지"/>
+                <HeaderMenu navigation={navigation} id={id} title="마이페이지"/>
                 <View style={[styles.Content]}>
                     <View style={[styles.profileContent]}>
                         <View>
-                            <ImageBackground source={require('../assets/images/bannerCat1.jpeg')} style={styles.userImage} imageStyle={styles.userImageStyle}>
+                            <ImageBackground source={{uri: serverURL + extra.ProfilePath}} style={styles.userImage} imageStyle={styles.userImageStyle}>
                             </ImageBackground>
                         </View>
                         <View style={[styles.userInfoView]}>
                             <View style={styles.userNameView}>
                                 <Text style={styles.userName}>
-                                    닉네이잉ㅁ
+                                    {extra.NickName}
                                 </Text>
                             </View>
                         </View>
@@ -34,7 +37,7 @@ const MyInfoDetail = ({navigation}) => {
                             </View>
                             <View style={[styles.userData]}>
                                 <Text style={[styles.userDataText]}>
-                                    유환수
+                                    {extra.Name}
                                 </Text>
                             </View>
                         </View>
@@ -46,7 +49,7 @@ const MyInfoDetail = ({navigation}) => {
                             </View>
                             <View style={[styles.userData]}>
                                 <Text style={[styles.userDataText]}>
-                                    1997.05.25
+                                    {extra.Birth}
                                 </Text>
                             </View>
                         </View>
@@ -58,7 +61,7 @@ const MyInfoDetail = ({navigation}) => {
                             </View>
                             <View style={[styles.userData]}>
                                 <Text style={[styles.userDataText]}>
-                                    010-4033-0930
+                                    {extra.Phone}
                                 </Text>
                             </View>
                         </View>
@@ -70,7 +73,7 @@ const MyInfoDetail = ({navigation}) => {
                             </View>
                             <View style={[styles.userData]}>
                                 <Text style={[styles.userDataText]}>
-                                    realyhs1@gmail.com
+                                    {extra.Email}
                                 </Text>
                             </View>
                         </View>

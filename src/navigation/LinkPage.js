@@ -1,23 +1,25 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Accordion from 'react-native-collapsible/Accordion';
 
 import HeaderMenu from './../components/HeaderMenu';
 import ImageButton from './../components/ImageButton';
+import { Context } from './../context/index';
 
 const LinkPage = ({navigation}) => {
+
+    const { state: { uid, id }, dispatch } = useContext( Context );
 
     const data = [
         {
             image: require('./../assets/images/icons/link1.png'),
-            link: 'https://google.com',
+            link: 'https://kws.or.kr',
             title: '사업 안내\n'
         },
         {
             image: require('./../assets/images/icons/link2.png'),
-            link: 'https://google.com',
+            link: 'http://kkoom.or.kr',
             title: '꿈꾸는 가게\n쇼핑몰'
         }
     ]
@@ -25,7 +27,7 @@ const LinkPage = ({navigation}) => {
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={{flex:1}}>
-                <HeaderMenu navigation={navigation} title="대한사회복지회"/>
+                <HeaderMenu navigation={navigation} id={id} title="대한사회복지회"/>
                 <View style={styles.itemView}>
                     <View style={{alignItems: 'center'}}>
                         <ImageButton

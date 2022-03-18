@@ -1,95 +1,70 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Switch, ScrollView } from 'react-native';
+import { useState, useEffect, useContext } from 'react';
+import { StyleSheet, View, Text, SafeAreaView, Switch, FlatList } from 'react-native';
 
 import HeaderPopup from './../components/HeaderPopup';
 import ImageButton from './../components/ImageButton';
+import { serverURL } from './../../config.json';
+import { Context } from './../context/index';
 
 import axios from 'axios';
 
 const Push = ({navigation}) => {
 
+    const { state: { uid, id }, dispatch } = useContext( Context );
+
     const [pushList, setPushList] = useState();
 
-    const parseDate = (pushDate) => {
-        let result = pushDate.split(' ');
+    const parseDate = (boardDate) => {
+        boardDate = new Date(boardDate);
+        let onlyDate = `${boardDate.getFullYear()}.${(boardDate.getMonth()+1) < 10 ? '0' : '' }${(boardDate.getMonth()+1)}.${boardDate.getDate() < 10 ? '0' : ''}${boardDate.getDate()}`;
+        let onlyTime = `${(boardDate.getHours()) < 10 ? '0' : '' }${boardDate.getHours()}:${(boardDate.getMinutes()) < 10 ? '0' : '' }${boardDate.getMinutes()}:${boardDate.getSeconds() < 10 ? '0' : ''}${boardDate.getSeconds()}`;
         const d = new Date();
         const year = d.getFullYear(); 
         const month = d.getMonth() + 1; 
         const date = d.getDate(); 
         const today = `${year}.${month >= 10 ? month : '0' + month}.${date >= 10 ? date : '0' + date}`;
-        console.log(today)
-        return result[0] == today ? result[1] : result[0];
-    }
-
-    const appendPushList = () => {
-        return (
-        <ScrollView style={styles.pushListView}>
-            {pushList.map((value, index) => (
-                <View style={styles.contentArea} key={index}>
-                    <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
-                        <Text style={[styles.pushType]}>
-                            {value.type}
-                        </Text>
-                        <Text style={[styles.pushDate]}>
-                            {parseDate(value.date)}
-                        </Text>
-                    </View>
-                    <Text style={[styles.pushTitle]} numberOfLines={1}>
-                        {value.title}
-                    </Text>
-                </View>
-            ))}
-        </ScrollView>
-        );
+        return onlyDate == today ? onlyTime : onlyDate;
     }
 
     const getPushList = async () => {
-        // const result = await axios({
-        //     url: 'http://localhost:3000/pushList',
-        //     method: 'get'
-        // });
-        
-        const data = 
-        [{
-            type: '지자체 지원 서비스 안내',
-            date: '2021.12.17 10:21:32',
-            // title: '2021 하반기 ',
-            title: '2021 하반기 한부모가족동절기수당(난방비)지원 사업 안내',
-            page: '',
-        },
-        {
-            type: '지자체 지원 서비스 안내',
-            date: '2021.12.06 10:21:32',
-            title: '2021 하반기 ',
-            page: '',
-        },
-        {
-            type: '지자체 지원 서비스 안내',
-            date: '2021.12.06 10:21:32',
-            title: '2021 하반기 ',
-            page: '',
-        },
-        {
-            type: '지자체 지원 서비스 안내',
-            date: '2021.12.06 10:21:32',
-            title: '2021 하반기 ',
-            page: '',
-        },
-        {
-            type: '지자체 지원 서비스 안내',
-            date: '2021.12.06 10:21:32',
-            title: '2021 하반기 ',
-            page: '',
-        }];
-
-        setPushList(data)
+        const result = await axios({
+            url: serverURL + 'index/push',
+            method: 'get',
+            params: {
+                MemberID: id,
+            } 
+        });
+        const data = result.data;
+        const info = data.info;
+        setPushList(info)
     };
 
     useEffect(() => {
         pushList ? '' : getPushList();
-        console.log(pushList)
+        // console.log(pushList)
     }, [pushList])
+
+
+    const renderItem = ({item}) => {
+        // let type = item.PushType;
+        console.log(item.PushTitle)
+        return (            
+            <View style={styles.contentArea}>
+                <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                    <Text style={[styles.pushType]} numberOfLines={1}>
+                        {item.PushTitle}
+                    </Text>
+                    <Text style={[styles.pushDate]}>
+                        {parseDate(item.PushDate)}
+                    </Text>
+                </View>
+                <Text style={[styles.pushTitle]} numberOfLines={1}>
+                    {item.PushDetail}
+                </Text>
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={{flex:1}}>
@@ -98,7 +73,13 @@ const Push = ({navigation}) => {
                     navigation={navigation}
                     title='알림 내역'
                 />
-                {pushList ? appendPushList() : <View></View>}
+                <FlatList
+                    style={styles.pushListView}
+                    data={pushList}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.PushUID}
+                    // onEndReached={getPush}
+                />  
             </View>
         </SafeAreaView>
     );
@@ -106,7 +87,7 @@ const Push = ({navigation}) => {
 
 const styles = StyleSheet.create({
     pushDate: {
-        flex:1,
+        width:80,
         includeFontPadding:false,
         fontFamily:'NotoSansKR-Regular',
         fontSize: 13,

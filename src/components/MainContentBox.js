@@ -7,14 +7,28 @@ const MainContentBox = (props) => {
     let img = props.img;
     let navigation = props.navigation;
 
-    return (
-        <TouchableOpacity activeOpacity={0.8} style={styles.contentButton} onPress={ () => navigation.navigate(page) }>
+    const appendContent = () => {
+        return (
             <View style={styles.contentView}>
                 <Image source={img} style={styles.contentImg}/>
-                <Text style={styles.contentText}>
+                <Text style={[styles.contentText]}>
                     {text}
                 </Text>
             </View>
+        );
+    }
+
+    const appendImgContent = () => {
+        return (
+            <View style={styles.contentView}>
+                <Image source={img} style={styles.contentFullImg}/>
+            </View>
+        );
+    }
+
+    return (
+        <TouchableOpacity activeOpacity={0.8} style={styles.contentButton} onPress={ () => (props.onPress) ? props.onPress() : navigation.navigate(page) }>
+            {props.text!='대한\n사회복지회' ? appendContent() : appendImgContent() }
         </TouchableOpacity>
     );
 };
@@ -25,8 +39,14 @@ const styles = StyleSheet.create({
         height: 65,
         resizeMode: 'contain',
     },
+    contentFullImg: {
+        width: 75,
+        height: 75,
+        resizeMode: 'contain',
+        marginTop: 10,
+    },
     contentText: {
-        marginTop: 0,
+        marginTop: -10,
         fontSize: 14,
         textAlign:'center',
         includeFontPadding:false,

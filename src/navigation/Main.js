@@ -1,46 +1,207 @@
-import React from 'react';
-import { Dimensions, StatusBar, Image, SafeAreaView, StyleSheet, TouchableOpacity, View, Text, ImageBackground, ScrollView, Platform } from 'react-native';
+import React, {useEffect, useContext, useState} from 'react';
+import { Dimensions, StatusBar, Image, SafeAreaView, StyleSheet, TouchableOpacity, View, Text, Linking, ImageBackground, ScrollView, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Swiper from 'react-native-swiper';
+import axios from 'axios';
 
 import Header from './../components/Header';
 import SearchBox from './../components/SearchBox';
 import MainContentBox from './../components/MainContentBox';
 import ListHeaderView from './../components/ListHeaderView';
 import ListContentView from './../components/ListContentView';
+import { Context } from './../context/index';
+import { serverURL } from './../../config.json';
+import Popup from './../components/Popup';
 
-import Swiper from 'react-native-swiper';
 
 
 
-const bannerView = (img) => {
-    return img.map( (value, index) => 
-        (<ImageBackground key={index} source={value.img} style={styles.slide}>
-            <Text style={styles.bannerText}>{value.str}</Text>
-        </ImageBackground>)
-    );
-}
-
-const SwiperComponent = (data) => {
-    return (
-      <Swiper style={styles.wrapper}
-      autoplay
-      autoplayTimeout={4}
-      height={250}
-      showsPagination={false}
-      >
-        {bannerView(data.img)}
-      </Swiper>
-    );
-}
 
 const Main = ({ navigation }) => {
+
+    const modalText = `로그인 후 이용하실 수 있습니다
+로그인 하시겠습니까?`;
+    const { state: { uid, id }, dispatch } = useContext( Context );
+    const [isPopup, setIsPopup] = useState(false);
+    const [appendBanner, setAppendBanner] = useState(false);
+    const [serverBanner, setServerBanner] = useState([]);
+    const [moveAgePageInfo, setMoveAgePageInfo] = useState();
+    const [noticeList, setNoticeList] = useState([]);
+
+    useEffect(() => {
+        try {
+            autoLogin();
+            if(!noticeList[0]) getNoticeList();
+        }
+        catch (e) {
+            console.warn('에러');
+            console.warn(e);
+        }
+        return () => {
+        }
+    }, []);
+
+    useEffect(() => {
+        moveAgePageInfo ? null : getMoveAgePageInfo();
+    }, [moveAgePageInfo]);
+
+    useEffect(() => {
+        appendBanner ? null : getServerBanner();
+    }, []);
+
+    const bannerView = (img) => {
+        return img.map( (value, index) => 
+            (<ImageBackground key={index} source={value.img} style={styles.slide}>
+                {/* <View style={{borderBottomStartRadius:5, borderBottomEndRadius:5}}>
+    
+                </View>
+                <Text style={styles.bannerText}>{value.str}</Text> */}
+            </ImageBackground>)
+        );
+    }
+
+    const serverBannerView = () => {
+        return serverBanner.map( (value, index) => 
+            (<ImageBackground key={index} source={{uri: serverURL + value.BannerPath}} style={styles.slide}>
+                {/* <View style={{borderBottomStartRadius:5, borderBottomEndRadius:5}}>
+    
+                </View>
+                <Text style={styles.bannerText}>{value.str}</Text> */}
+            </ImageBackground>)
+        );
+    }
+    
+    const SwiperComponent = (data) => {
+        return (
+          <Swiper style={styles.wrapper}
+          autoplay
+          autoplayTimeout={4}
+          height={250}
+          showsPagination={false}
+          >
+            {serverBanner[0] ? serverBannerView() : bannerView(data.img)}
+          </Swiper>
+        );
+    }
+
+    const getServerBanner = async () => {
+        console.log('getServerBannerImg')
+        const result = await axios({
+            url: serverURL + 'index/banner',
+            method: 'get',
+        });
+        const data = result.data;
+        const info = data.info;
+        const append = info.append;
+        setServerBanner(append);
+        setAppendBanner(true)
+    }
+
+    const getMoveAgePageInfo = async () => {
+        console.log('getMoveAgePageInfo')
+        const result1 = await axios({
+            url: serverURL + 'index/subCategory',
+            method: 'get',
+            params: {
+                SubCategoryUID: 36
+            }
+        });
+        const data1 = result1.data;
+        const info1 = data1.info[0];
+        
+        const result2 = await axios({
+            url: serverURL + 'index/subCategory',
+            method: 'get',
+            params: {
+                SubCategoryUID: 37
+            }
+        });
+        const data2 = result2.data;
+        const info2 = data2.info[0];
+
+        setMoveAgePageInfo({
+            first: {
+                type: 36,
+                text: info1.SubCategoryName
+            },
+            second: {
+                type: 37,
+                text: info2.SubCategoryName
+            }
+        })
+    }
+
+    const moveLoginPage = () => {
+        setIsPopup(false);
+        navigation.navigate('Login', {});
+    }
+
+    async function getNoticeList() {
+        const result = await axios({
+            url: serverURL + 'index/board',
+            method: 'get',
+            params: {
+                page: 1,
+                limit: 5,
+                BoardType: 'notice'
+            }
+        });
+        const data = result.data;
+        if(data.status == 200) {
+            setNoticeList(data.info);
+        }
+    }
+
+    const appendNoticeList = () => {
+        return noticeList.map((value, index) => 
+            (
+                <ListContentView 
+                    key={index}
+                    title={value.BoardTitle}
+                    date={parseDate(value.BoardDate)}
+                    onPress={() => navigation.navigate('Notice', {index: index})}
+                />
+            )
+        );
+    }
+
+    const parseDate = (boardDate) => {
+        boardDate = new Date(boardDate);
+        boardDate = `${boardDate.getFullYear()}. ${(boardDate.getMonth()+1) < 10 ? '0' : '' }${(boardDate.getMonth()+1)}. ${boardDate.getDate() < 10 ? '0' : ''}${boardDate.getDate()}`;
+        return boardDate;
+    }
+
+    async function autoLogin() {
+        let autoUID = await AsyncStorage.getItem('uid');
+        let autoID = await AsyncStorage.getItem('id');
+        let result = await axios({
+            url: serverURL + 'user/userInfo',
+            method: 'get',
+            params: {
+                MemberID: autoID
+            }
+        })
+        let extra = result.data.info;
+        if(autoUID) {
+            dispatch({
+            type: 'SET_UID',
+            uid: autoUID,
+            id: autoID,
+            extra: extra
+            })
+        }
+        else {
+        }
+    }
+
     let screen = Dimensions.get('screen').height;
     let window = Dimensions.get('window').height;
     let bar = StatusBar.currentHeight;
     let androidPadding = screen - window;
     
     let imagePathList = [
-        {uid:1, img:require('../assets/images/bannerCat1.jpeg'), str:'맘먀'},
-        {uid:2, img:require('../assets/images/bannerCat2.jpeg'), str:'루루'}
+        {uid:1, img:require('../assets/images/banner1.jpeg')},
+        {uid:2, img:require('../assets/images/banner2.jpeg')}
     ];
     let mainContentText = [
         {
@@ -83,10 +244,17 @@ const Main = ({ navigation }) => {
     return (
         <SafeAreaView style={[{flex:1, position:'relative', backgroundColor: '#fff'}]}>
             <View style={{flex:1}}>
-                <Header navigation={navigation} />
+                <Header navigation={navigation} id={id} 
+                    setIsPopup={value => setIsPopup(value)}/>
+                <Popup 
+                    isPopup={isPopup} 
+                    setIsPopup={value => setIsPopup(value)} 
+                    modalText={modalText}
+                    onPressOK={() => moveLoginPage()}
+                />
                 <ScrollView>
                     <View style={styles.titleView}>
-                        <SwiperComponent img={imagePathList}/>
+                        {appendBanner ? <SwiperComponent img={imagePathList}/> : null}
                     </View>
                     <SearchBox navigation={navigation} />
                     <View style={styles.mainContent}>
@@ -128,39 +296,50 @@ const Main = ({ navigation }) => {
                                 text={mainContentText[5].text}
                                 img={mainContentText[5].img}
                                 navigation={navigation}
+                                onPress={() => Linking.openURL('https://kws.or.kr')}
                             />
                         </View>
                     </View>
                     <View style={styles.apply}>
-                        <View style={styles.applyView}>
+                        {moveAgePageInfo
+                        ? <View style={styles.applyView}>
                             <TouchableOpacity activeOpacity={0.8} style={[styles.applyButton]} 
                                 onPress={ () => navigation.navigate('ServiceInfoList', {
-                                    type: '',
-                                    text: '한부모가정지원사업',
+                                    type: '36',
+                                    text: moveAgePageInfo.first.text,
+                                    mainCategory: '기타',
                                 })}
                             >
                                 <View style={[styles.applyContent, styles.Shadow]}>
-                                    <Text style={styles.applyText}>
-                                        한부모가정지원사업{'\n'}신청하기
+                                    <Text style={[styles.applyText, {maxHeight: '66%'}]}>
+                                        {moveAgePageInfo.first.text}
                                     </Text>
-                                    <Image source={require('./../assets/images/icons/rightCircle.png')} style={styles.applyImg}/>
+                                    <Text style={[styles.applyText]}>
+                                        신청하기
+                                    </Text>
+                                    <Image source={require('./../assets/images/icons/rightCircle.png')} style={[styles.applyImg]}/>
                                 </View>
                             </TouchableOpacity>
                             
                             <TouchableOpacity activeOpacity={0.8} style={[styles.applyButton]} 
                                 onPress={ () => navigation.navigate('ServiceInfoList', {
-                                    type: '',
-                                    text: '서민금융재단사업',
+                                    type: '37',
+                                    text: moveAgePageInfo.second.text,
+                                    mainCategory: '기타',
                                 })}
                             >
                                 <View style={[styles.applyContent, styles.Shadow]}>
+                                    <Text style={[styles.applyText, {maxHeight: '66%'}]}>
+                                        {moveAgePageInfo.second.text}
+                                    </Text>
                                     <Text style={[styles.applyText]}>
-                                        서면금융제단사업{'\n'}신청하기
+                                        신청하기
                                     </Text>
                                     <Image source={require('./../assets/images/icons/rightCircle.png')} style={styles.applyImg}/>
                                 </View>
                             </TouchableOpacity>
                         </View>
+                        : null}
                     </View>
                     <View style={styles.notice}>
                         <ListHeaderView 
@@ -168,24 +347,28 @@ const Main = ({ navigation }) => {
                             navigation={navigation}
                             movePage='Notice'
                         />
-                        <ListContentView 
-                            title='공지사항1asdasdsadasdasdasdasdasdasdasdadas'
-                            date='2021.12.06'
-                            onPress={() => navigation.navigate('Notice')}
-                        />
-                        <ListContentView 
-                            title='공지사항2asdasdsadasdasdasdasdasdasdasdadas'
-                            date='2021.12.06'
-                            onPress={() => navigation.navigate('Notice')}
-                        />
-                        <ListContentView 
-                            title='공지사항3asdasdsadasdasdasdasdasdasdasdadas'
-                            date='2021.12.06'
-                            onPress={() => navigation.navigate('Notice')}
-                        />
+                        {noticeList[0] ? appendNoticeList() : null}
                     </View>
                     <View  style={styles.footer}>
-                        <Image source={require('./../assets/images/icons/footerLogo.png')} style={styles.footerImg}/>
+                        <View style={styles.footerFirst}>
+                            <View style={styles.footerImgView}>
+                                <Image source={require('./../assets/images/icons/footerLogo.png')} style={styles.footerImg}/>
+                            </View>
+                            
+                            <View style={styles.footerTextView}>
+                                <Text style={styles.footerText}>
+                                    본 애플리케이션은 금융산업공익재단의
+                                </Text>
+                                <Text style={styles.footerText}>
+                                    후원을 받아 제작하였습니다.
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.footerSecond}>
+                            <Text style={styles.footerText}>
+                                 대한사회복지회 문의 : 1577-5155
+                            </Text>
+                        </View>
                     </View>
                 </ScrollView>
             </View>
@@ -250,7 +433,7 @@ const styles = StyleSheet.create({
         includeFontPadding:false,
         fontFamily:'NotoSansKR-Medium',
         color: '#191919',
-        fontSize: 15
+        fontSize: 14,
     },
     applyImg: {
         position: 'absolute',
@@ -264,7 +447,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#9DD6EB'
+        backgroundColor: '#FFF'
     },
     bannerText: {
         color: '#fff',
@@ -354,10 +537,34 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    footerFirst: {
+        flexDirection: 'row'
+    },
+    footerSecond: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10
+    },
+    footerText: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        color: '#8D8D8D',
+        fontSize: 10,
+    },
+    footerTextView: {
+        justifyContent: 'center',
+        // alignItems: 'center',
+        flex: 1,
+    },
     footerImg: {
         resizeMode: 'contain',
-        width: 200,
-        height: 40
+        width: 150,
+        height: 40,
+    },
+    footerImgView: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
     }
 });
 
