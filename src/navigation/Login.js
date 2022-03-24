@@ -156,7 +156,8 @@ const Login = ({ navigation }) => {
               isChecked={isAuto}
               onChange={ value => setIsAuto(value) }
               styles={styles.autoLoginCheck}
-              checkTextStyle={styles.checkTextStyle}
+              checkColor={'white'}
+              checkImgStyle={styles.checkImgStyle}
               checkedViewStyle={styles.checkedViewStyle}
             >
               <Text style={styles.userControllText}>
@@ -247,7 +248,8 @@ const styles = StyleSheet.create({
     marginTop: 3,
     width: 13,
     height: 13,
-    borderRadius: 2
+    borderRadius: 2,
+    justifyContent: 'center'
   },
   textInput: {
     marginTop: 10,
@@ -262,10 +264,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#92D14F',
     borderColor:'#92D14F'
   },
-  checkTextStyle: {
-    includeFontPadding:false,
-    fontSize: 9,
-    color:'#FFFFFF'
+  checkImgStyle: {
+    width: 9,
+    height: 9,
   },
   checkUserText: {
     marginTop: 15,

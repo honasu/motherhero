@@ -6,7 +6,6 @@ import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 
 import HeaderMenu from './../components/HeaderMenu';
-import Selector from './../components/Selector';
 import Button from './../components/Button';
 import ImageButton from './../components/ImageButton';
 import Popup from '../components/Popup'
@@ -23,7 +22,8 @@ const MotherList = ({route, navigation}) => {
 
     const [isPopup, setIsPopup] = useState(false);
     const [motherListData, setMotherListData] = useState([]);
-    const [selectItem, setSelectItem] = useState(0);
+    const [pageName, setPageName] = useState(route.params.pageName);
+    const [MainCategory, setMainCategory] = useState(route.params.MainCategory);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
 
@@ -42,14 +42,7 @@ const MotherList = ({route, navigation}) => {
     }, [isFocused])
 
     const getList = async () => {
-        console.log('page');
-        console.log(page);
-        console.log('loading');
-        console.log(loading);
-        console.log('selectItem');
-        console.log(selectItem);
         if(loading) return;
-        const MainCategory = (selectItem == 1) ? 'market' : 'info';
         setLoading(true);
 
         const result = await axios({
@@ -79,11 +72,8 @@ const MotherList = ({route, navigation}) => {
                 style={styles.listContent} 
                 onPress={() => navigation.navigate('MotherDetail', {
                     BoardUID : item.BoardUID,
-                    headerTitle: selectItem == 1 ? '나눔 마켓' : '유용한 정보'
+                    headerTitle: pageName
             })}>
-                <View style={[styles.motherFlagView, selectItem == 1 ? {backgroundColor:'#ED1164'} : {backgroundColor: '#558ccc'}]}>
-                    <Text style={styles.motherFlagText}>{selectItem == 1 ? '나눔 마켓' : '유용한 정보'}</Text>
-                </View>
                 <Text style={styles.listTitle}>
                     {item.BoardTitle}
                 </Text>
@@ -113,7 +103,7 @@ const MotherList = ({route, navigation}) => {
 
     const moveWritePage = () => {
         id ? navigation.navigate('MotherWrite', {
-            selectItem: selectItem
+            MainCategory: MainCategory
         }) : setIsPopup(true)
     }
 
@@ -123,12 +113,9 @@ const MotherList = ({route, navigation}) => {
     }
     
     const resetPageData = (value) => {
-        console.log('value')
-        console.log(value)
         setPage(0); 
         setLoading(false); 
         setMotherListData([]); 
-        if(value || value == 0)setSelectItem(value);
     }
 
     return (
@@ -145,19 +132,10 @@ const MotherList = ({route, navigation}) => {
                     styles={[styles.writeButton]} 
                     onPress={moveWritePage}
                 />
-                <HeaderMenu navigation={navigation}title="슬기로운 엄마생활"
+                <HeaderMenu navigation={navigation} title={pageName}
                      id={id} setIsPopup={value => setIsPopup(value)}/>
-                <View style={styles.selectorView}>
-                    <View style={styles.selectorArea}>
-                        <Selector
-                            data={['유용한 정보', '나눔 마켓']}
-                            defaultValueByIndex="0"
-                            onSelect={resetPageData}
-                            SelectAreaStyle={styles.SelectAreaStyle}
-                        />
-                    </View> 
-                </View>
                 <FlatList
+                    style={styles.Content}
                     data={motherListData}
                     renderItem={renderItem}
                     keyExtractor={item => item.BoardUID}
@@ -176,7 +154,10 @@ const styles = StyleSheet.create({
     },
     ContentView:{
         position:'relative',
-        height:'100%'
+        height:'100%',
+    },
+    Content:{
+        marginTop:70
     },
     writeButton: {
         width: 110,
@@ -233,9 +214,6 @@ const styles = StyleSheet.create({
         alignSelf:"flex-start",
         marginBottom: 3
     },
-    Content:{
-        marginTop:50,
-    },
     Row:{
         flexDirection: "row",
         flexWrap: "wrap",
@@ -252,14 +230,13 @@ const styles = StyleSheet.create({
     listContent: {
         borderBottomColor:'#9e9e9e',
         borderBottomWidth:1,
-        paddingTop: 10,
+        paddingTop: 20,
         paddingBottom: 15,
         paddingLeft:20,
         paddingRight:20,
         backgroundColor: 'white',
         width: '100%',
-        maxWidth: 1024,
-        position: 'relative'
+        maxWidth: 1024
     },
     ContentView: {
         flex: 1
@@ -279,6 +256,14 @@ const styles = StyleSheet.create({
     listDate: {
         position: 'absolute',
         right:0
+    },
+    writeButton: {
+        width: 110,
+        height: 110,
+        position: 'absolute',
+        right: -15,
+        bottom: -15,
+        zIndex: 5
     },
 });
 

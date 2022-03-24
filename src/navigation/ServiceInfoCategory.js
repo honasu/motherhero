@@ -110,17 +110,17 @@ const ServiceInfoCategory = ({navigation}) => {
             },
             {
                 index : 1,
-                title : "영 ・ 유아",
+                title : "영 ・ 유아 (~36개월)",
                 description : setMoveButton(cate[1])
             },
             {
                 index : 2,
-                title : "아동",
+                title : "아동 (36개월 ~ 초등 3학년)",
                 description : setMoveButton(cate[2])
             },
             {
                 index : 3,
-                title : "청소년",
+                title : "청소년 (초등 4학년 ~ 고 3까지)",
                 description : setMoveButton(cate[3])
             },
             {
@@ -168,7 +168,7 @@ const ServiceInfoCategory = ({navigation}) => {
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
-                <HeaderMenu navigation={navigation} title="연령별 지원정보"
+                <HeaderMenu navigation={navigation} title="지원서비스 정보"
                      id={id} setIsPopup={value => setIsPopup(value)}/>
                 <Popup 
                     isPopup={isPopup} 

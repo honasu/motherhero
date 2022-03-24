@@ -16,6 +16,9 @@ const ChattingButton = (props) => {
                 placeholder={"무슨 고민이 있으신가요?"}
                 value={message}
                 onChangeText={setMessage}
+                multiline={true} 
+                blurOnSubmit={false}
+                onSubmitEditing={() => {return '\n'}}
             />
             <Button
                 title='보내기'
@@ -35,7 +38,7 @@ const ChattingButton = (props) => {
 const styles = StyleSheet.create({
     View:{
         width:'100%',
-        height:55,
+        height:105,
         padding:8,
         // paddingTop:5,
         // paddingBottom: 5,
@@ -76,18 +79,22 @@ const styles = StyleSheet.create({
     },
     BasicInput:{
         // marginTop:5,
+        height:'100%',
+        // width:Dimensions.get('window').width - 145,
         marginLeft:8,
         paddingTop:0,
         paddingRight:0,
         paddingBottom:0,
         paddingLeft:0,
-        // height:30,
-        // width:Dimensions.get('window').width - 145,
+        
         flex:1,
         borderWidth: 0
     },
     InputStyle:{
         // textAlign:'center',
+        // borderWidth: 1,
+        height: '100%',
+        textAlignVertical: 'top',
         padding:5,
         includeFontPadding:false,
         fontFamily:'NotoSansKR-Regular',

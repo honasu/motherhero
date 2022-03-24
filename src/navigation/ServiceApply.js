@@ -128,6 +128,9 @@ const ServiceApply = ({ route, navigation }) => {
                     </Button>
                 </View>
                 <View style={styles.messageView}>
+                    {page == 1 && !message.text ? <Text style={[styles.messageText, {color:'#191919'}]}>
+                        {'※ 신청서 작성을 하지 않으시면\n사업 신청이 완료되지 않습니다.'}
+                    </Text> : null}
                     {message.text ? <Text style={styles.messageText}>
                         {message.text}
                     </Text> : null}

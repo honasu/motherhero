@@ -21,7 +21,8 @@ import Push from './navigation/Push';
 import Login from './navigation/Login';
 import Join from './navigation/Join';
 import BabyCategory from './navigation/BabyCategory';
-import BabyInfo from './navigation/BabyInfo';
+import BabyInfoList from './navigation/BabyInfoList';
+import BabyDetail from './navigation/BabyDetail';
 import ServiceInfoCategory from './navigation/ServiceInfoCategory';
 import ServiceInfoList from './navigation/ServiceInfoList';
 import ServiceDetail from './navigation/ServiceDetail';
@@ -39,6 +40,7 @@ import ReviewList from './navigation/ReviewList';
 import ReviewWrite from './navigation/ReviewWrite';
 import ReviewUpdate from './navigation/ReviewUpdate';
 import LinkPage from './navigation/LinkPage';
+import Mother from './navigation/Mother';
 import MotherList from './navigation/MotherList';
 import MotherDetail from './navigation/MotherDetail';
 import MotherWrite from './navigation/MotherWrite';
@@ -49,8 +51,9 @@ import ProfileUpdate from './navigation/ProfileUpdate';
 import MyInfoDetail from './navigation/MyInfoDetail';
 import MyInfoUpdate from './navigation/MyInfoUpdate';
 import Notice from './navigation/Notice';
-import Terms from './navigation/Terms';
+import Terms from './navigation/Terms';MyBoardList
 import IDPW from './navigation/IDPW';
+import MyBoardList from './navigation/MyBoardList';
 
 import { Provider } from './context/index';
 import PushPopup, { pushPopup } from './components/PushPopup';
@@ -63,7 +66,8 @@ function MyStack() {
       <Stack.Screen name="Join" component={Join} options={{ title: '회원가입', headerShown: false }}/>
       <Stack.Screen name="Push" component={Push} options={{ title: '알림확인', headerShown: false }}/>
       <Stack.Screen name="BabyCategory" component={BabyCategory} options={{ title: '육아정보카테고리', headerShown: false }}/>
-      <Stack.Screen name="BabyInfo" component={BabyInfo} options={{ title: '육아정보', headerShown: false }}/>
+      <Stack.Screen name="BabyInfoList" component={BabyInfoList} options={{ title: '육아정보', headerShown: false }}/>
+      <Stack.Screen name="BabyDetail" component={BabyDetail} options={{ title: '육아정보상세', headerShown: false }}/>
       <Stack.Screen name="ServiceInfoCategory" component={ServiceInfoCategory} options={{ title: '지원서비스정보카테고리', headerShown: false }}/>
       <Stack.Screen name="ServiceInfoList" component={ServiceInfoList} options={{ title: '지원서비스정보리스트', headerShown: false }}/>
       <Stack.Screen name="ServiceDetail" component={ServiceDetail} options={{ title: '지원서비스정보상세', headerShown: false }}/>
@@ -81,6 +85,7 @@ function MyStack() {
       <Stack.Screen name="ReviewList" component={ReviewList} options={{ title: 'ReviewList', headerShown: false }}/>
       <Stack.Screen name="ReviewUpdate" component={ReviewUpdate} options={{ title: 'ReviewUpdate', headerShown: false }}/>
       {/* <Stack.Screen name="LinkPage" component={LinkPage} options={{ title: '대한사회복지회', headerShown: false }}/> */}
+      <Stack.Screen name="Mother" component={Mother} options={{ title: '슬기로운엄마생활카테고리', headerShown: false }}/>
       <Stack.Screen name="MotherList" component={MotherList} options={{ title: '슬기로운엄마생활목록', headerShown: false }}/>
       <Stack.Screen name="MotherDetail" component={MotherDetail} options={{ title: '슬기로운엄마생활상세', headerShown: false }}/>
       <Stack.Screen name="MotherWrite" component={MotherWrite} options={{ title: '슬기로운엄마생활글쓰기', headerShown: false }}/>
@@ -89,6 +94,7 @@ function MyStack() {
       <Stack.Screen name="ProfileUpdate" component={ProfileUpdate} options={{ title: '프로필수정', headerShown: false }}/>
       <Stack.Screen name="MyInfoDetail" component={MyInfoDetail} options={{ title: '내정보상세', headerShown: false }}/>
       <Stack.Screen name="MyInfoUpdate" component={MyInfoUpdate} options={{ title: '내정보수정', headerShown: false }}/>
+      <Stack.Screen name="MyBoardList" component={MyBoardList} options={{ title: '내가 쓴 글', headerShown: false }}/>
       <Stack.Screen name="Notice" component={Notice} options={{ title: '공지사항', headerShown: false }}/>
       <Stack.Screen name="Terms" component={Terms} options={{ title: '이용약관', headerShown: false }}/>
       <Stack.Screen name="IDPW" component={IDPW} options={{ title: 'IDPW', headerShown: false }}/>

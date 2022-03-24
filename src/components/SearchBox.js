@@ -12,17 +12,30 @@ const SearchBox = (props) => {
             <Input
                 styles={styles.Input}
                 InputStyle={styles.InputStyle}
-                placeholder={"검색 내용을 입력하세요."}
+                placeholder={"지원서비스 정보 검색하기"}
                 onChangeText={setSearchText}
+                value={searchText}
+                onEndEditing={() => {
+                    if(searchText) {
+                        setSearchText()
+                        props.navigation.navigate('SearchPage', {
+                            text: searchText
+                        })
+                    }
+                }}
             />
             <ImageButton
                 image={require('./../assets/images/icons/search.png')}
                 styles={styles.SearchButton}
                 onPress={() => {
-                    console.log('search');
-                    props.navigation.navigate('SearchPage', {
-                        text: searchText
-                    })
+                    console.log('onPress')
+                    console.log(searchText)
+                    if(searchText) {
+                        setSearchText()
+                        props.navigation.navigate('SearchPage', {
+                            text: searchText
+                        })
+                    }
                 }}
             />
         </View>

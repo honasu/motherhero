@@ -21,7 +21,7 @@ const HeaderSub = (props) => {
                 styles={[styles.SearchButton, (props.page=='search'?{display:'flex'}:{display:'none'})]}
                 onPress={() => props.navigation.goBack()}
             />
-            <Text style={[styles.HeaderText,(props.page=='normal'?{display:'flex'}:{display:'none'})]}>{props.title}</Text>
+            <Text style={[styles.HeaderText,(props.page=='normal'?{display:'flex'}:{display:'none'})]} numberOfLines={1}>{props.title}</Text>
             {/* <ImageButton
                 title='완료'
                 styles={[styles.BasicButton,styles.SmallButton,(props.page=='detail_filter'?{display:'flex'}:{display:'none'})]}
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
       height:70,
       paddingTop:10,
       paddingBottom:10,
-      paddingLeft:10,
-      paddingRight:10,
+      paddingLeft:55,
+      paddingRight:55,
       flexWrap: "wrap",
       flexDirection: "row",
       position:'absolute',

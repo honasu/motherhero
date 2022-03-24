@@ -83,7 +83,9 @@ const JoinContent = (data) => {
                         <CheckBox
                             isChecked={ isChecked.isChecked1 }
                             onChange={ value => {onChange({isChecked1: value});}}
-                            styles={{marginTop: 15}}
+                            styles={{marginTop: 15, justifyContent: 'center'}}
+                            checkColor={'black'}
+                            checkImgStyle={styles.checkImgStyle}
                         >
                             <TouchableOpacity activeOpacity={0.8}  style={{marginTop: 15}} onPress = { () => { openInfo(1)}}>
                                 <Text style={styles.firstJoinText}>
@@ -94,7 +96,9 @@ const JoinContent = (data) => {
                         <CheckBox
                             isChecked={ isChecked.isChecked2 }
                             onChange={ value => onChange({isChecked2: value}) }
-                            styles={{marginTop: 15}}
+                            styles={{marginTop: 15, justifyContent: 'center'}}
+                            checkColor={'black'}
+                            checkImgStyle={styles.checkImgStyle}
                         >
                             <TouchableOpacity activeOpacity={0.8}  style={{marginTop: 15}} onPress = { () => { openInfo(2)}}>
                                 <Text style={styles.firstJoinText}>
@@ -129,7 +133,7 @@ const JoinContent = (data) => {
                         <View style={styles.joinInputView}>
                             <TextInput
                                 style={styles.joinInput}
-                                placeholder={"비밀번호를 입력해주세요."}
+                                placeholder={"비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~20글자 이상 입력해주세요."}
                                 placeholderTextColor = "#D5D5D5"
                                 onChangeText={ text => onChange({pw: text}) }
                                 value={seconedPageInfo.pw}
@@ -363,6 +367,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color:'#191919',
     },
+    checkImgStyle: {
+        width: 15,
+        height: 15
+    }
 });
 
 export default JoinContent;

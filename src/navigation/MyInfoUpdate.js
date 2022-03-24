@@ -2,10 +2,14 @@ import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import axios from 'axios';
+
 import HeaderMenu from '../components/HeaderMenu'
 import Popup from '../components/Popup'
+import Selector from '../components/Selector';
+import Button from '../components/Button';
 import { Context } from './../context/index';
-import axios from 'axios';
 import { serverURL } from './../../config.json';
 
 const MyInfoUpdate = ({navigation}) => {
@@ -23,11 +27,15 @@ const MyInfoUpdate = ({navigation}) => {
     const [ phone, setPhone ] = useState(extra.Phone);
     const [ name, setName ] = useState(extra.Name);
     const [ email, setEmail ] = useState(extra.Email);
+    const [ nickName, setNickName ] = useState(extra.NickName);
+    const [ img, setImg ] = useState();
+    const [ userInfo, setUserInfo ] = useState({});
+
     const updateUserInfo = async () => {
         console.log('updateUserInfo');
 
         if(pw && !pwRole(pw)) {
-            setMessage({text: '비밀번호는 영문,숫자, 특수문자를 혼합하여 8~20글자 이상 입력해주세요.'});
+            setMessage({text: '비밀번호는 영문, 숫자, 특수문자를 혼합하여 8~20글자 이상 입력해주세요.'});
             return;
         }
         if(pw && pw != pwCk) {
@@ -39,20 +47,25 @@ const MyInfoUpdate = ({navigation}) => {
             return;
         }
 
+        var formData = new FormData();
+        formData.append('MemberID', id);
+        formData.append('MemberPW', pw);
+        formData.append('Birth', birth);
+        formData.append('Phone', phone);
+        formData.append('Email', email);
+        formData.append('Name', name);
+        formData.append('MemberUID', uid);
+        formData.append('NickName', nickName);
+        formData.append('profile', userInfo.img);
+
         const result = await axios({
             url: serverURL + 'user/userInfo',
             headers: {
                 'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
             },
             method: 'put',
-            data: {
-                MemberPW: pw,
-                Birth: birth,
-                Phone: phone,
-                Email: email,
-                Name: name,
-                MemberUID: uid
-            }
+            data: formData
         });
         const data = result.data;
         console.log(data)
@@ -67,6 +80,45 @@ const MyInfoUpdate = ({navigation}) => {
         setIsPopup(false);
     }
 
+    const pickImg = () => {
+        const options = {
+            title: 'Select Avatar', //이미지 선택할 때 제목입니다 ( 타이틀 ) 
+            customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }], // 선택 버튼을 커스텀 할 수 있습니다.
+            storageOptions: {
+            skipBackup: true,	// ios인 경우 icloud 저장 여부 입니다!
+            path: 'images',
+            },
+        };
+        
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info in the API Reference)
+         */
+         launchImageLibrary(options, (response) => {        
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+            // You can also display the image using data:
+            // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+                let date = new Date().getTime();
+                setUserInfo({
+                    ...userInfo,
+                    img: { 
+                        name: date+id+".png", 
+                        type: 'image/png', 
+                        uri: response.assets[0].uri
+                    }
+                })
+                
+                setImg(response.assets[0].uri); // 저는 여기서 uri 값을 저장 시킵니다 !
+            }
+        });
+    }
+
     const pwRole = (userPw) => {
         let num = userPw.search(/[0-9]/g);
         let eng = userPw.search(/[a-z]/ig);
@@ -77,6 +129,7 @@ const MyInfoUpdate = ({navigation}) => {
         }
         return true;
     }
+
     return (
         <SafeAreaView  style={styles.SafeAreaView}>
             <View style={styles.ContentView}>
@@ -89,10 +142,25 @@ const MyInfoUpdate = ({navigation}) => {
                 <HeaderMenu navigation={navigation} id={id} title="마이페이지"/>
                 <View style={[styles.Content]}>
                     <View style={[styles.userDataList]}>
+                        <TouchableOpacity
+                            style={styles.joinProfileUploadImage}
+                            onPress={() => pickImg()}
+                        >
+                            <Image source={img ? {uri: img} : {uri: serverURL + extra.ProfilePath}} style={styles.joinProfileImg}  imageStyle={styles.userImageStyle}/> 
+                        </TouchableOpacity>
                         <View style={styles.joinInputView}>
                             <TextInput
                                 style={styles.joinInput}
-                                placeholder={"수정할 비밀번호를 입력하세요."}
+                                placeholder={"수정할 닉네임을 입력하세요."}
+                                placeholderTextColor = "#D5D5D5"
+                                onChangeText={ text => setNickName(text) }
+                                value={nickName}
+                            />
+                        </View>
+                        <View style={styles.joinInputView}>
+                            <TextInput
+                                style={styles.joinInput}
+                                placeholder={"비밀번호 영문, 숫자, 특수문자 8자이상 입력"}
                                 placeholderTextColor = "#D5D5D5"
                                 onChangeText={ text => setPw(text) }
                                 value={pw}
@@ -240,6 +308,17 @@ const styles = StyleSheet.create({
     },
     userData: {
         
+    },
+    joinProfileImg: {
+        // borderRadius:100, 
+        // borderWidth:2, 
+        marginTop:50,
+        marginBottom:30,
+        width:100,
+        height:100,
+        padding:15,
+        alignSelf: 'center',
+        borderRadius: 100
     },
     userDataText: {
         includeFontPadding:false,

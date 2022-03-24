@@ -12,6 +12,11 @@ const HeaderPopup = (props) => {
                 onPress={() => props.onPrev ? props.onPrev() : props.navigation.goBack()}
             />
             <Text style={styles.HeaderText}>{props.title}</Text>
+            {props.push ? <ImageButton
+                image={require('./../assets/images/icons/pushDelete.png')}
+                styles={[styles.HeaderPushDeleteButton]}
+                onPress={() => props.deleteListButton()}
+            /> : null}
         </View>
     );
 }
@@ -48,7 +53,7 @@ const styles = StyleSheet.create({
     includeFontPadding:false,
     fontFamily:'NotoSansKR-Regular',
     fontSize: 22,
-    color:'white',
+    color:'#FFFFFF',
     marginRight:10
   },
   HeaderButton:{
@@ -58,6 +63,14 @@ const styles = StyleSheet.create({
     paddingRight:0,
     position: 'absolute',
     left: 20,
+  },
+  HeaderPushDeleteButton: {
+    width:26,
+    height:26,
+    paddingLeft:0,
+    paddingRight:0,
+    position: 'absolute',
+    right: 20,
   },
 });
 

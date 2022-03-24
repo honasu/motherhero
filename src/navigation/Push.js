@@ -1,9 +1,10 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Switch, FlatList } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Switch, FlatList, TouchableOpacity } from 'react-native';
 
 import HeaderPopup from './../components/HeaderPopup';
 import ImageButton from './../components/ImageButton';
+import CheckBox from './../components/CheckBox';
 import { serverURL } from './../../config.json';
 import { Context } from './../context/index';
 
@@ -13,7 +14,13 @@ const Push = ({navigation}) => {
 
     const { state: { uid, id }, dispatch } = useContext( Context );
 
+    useEffect(() => {
+        pushList ? '' : getPushList();
+    }, [pushList])
+
     const [pushList, setPushList] = useState();
+    const [isChecked, setIsChecked] = useState({});
+    const [ deleteList, setDeleteList ] = useState(false);
 
     const parseDate = (boardDate) => {
         boardDate = new Date(boardDate);
@@ -40,30 +47,101 @@ const Push = ({navigation}) => {
         setPushList(info)
     };
 
-    useEffect(() => {
-        pushList ? '' : getPushList();
-        // console.log(pushList)
-    }, [pushList])
-
+    const onChange = (uid, value) => {
+        let tmp = {};
+        tmp[uid] = value;
+        setIsChecked({
+            ...isChecked,
+            ...tmp
+        })
+    }
 
     const renderItem = ({item}) => {
-        // let type = item.PushType;
-        console.log(item.PushTitle)
-        return (            
+        return (
             <View style={styles.contentArea}>
-                <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
-                    <Text style={[styles.pushType]} numberOfLines={1}>
-                        {item.PushTitle}
+                {deleteList ? 
+                <TouchableOpacity
+                    style={{width: '100%', height: '100%'}}
+                    onPress={ () => {onChange(item.PushUID, isChecked[item.PushUID] ? false : true);}}
+                >
+                    <CheckBox
+                    isChecked={ isChecked[item.PushUID] }
+                    onChange={ value => {onChange(item.PushUID, value);}}
+                    styles={styles.deleteBox}
+                    checkColor={'black'}
+                    checkImgStyle={styles.checkImgStyle}
+                    >
+                    </CheckBox>             
+                    <View style={[{width: '100%', paddingLeft: 15}]}>
+                        <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                            <Text style={[styles.pushType]} numberOfLines={1}>
+                                {item.PushTitle}
+                            </Text>
+                            <Text style={[styles.pushDate]}>
+                                {parseDate(item.PushDate)}
+                            </Text>
+                        </View>
+                        <Text style={[styles.pushTitle]} numberOfLines={1}>
+                            {item.PushDetail}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                : <View style={[{width: '100%'}, deleteList ? {paddingLeft: 15} : {} ]}>
+                    <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                        <Text style={[styles.pushType]} numberOfLines={1}>
+                            {item.PushTitle}
+                        </Text>
+                        <Text style={[styles.pushDate]}>
+                            {parseDate(item.PushDate)}
+                        </Text>
+                    </View>
+                    <Text style={[styles.pushTitle]} numberOfLines={1}>
+                        {item.PushDetail}
                     </Text>
-                    <Text style={[styles.pushDate]}>
-                        {parseDate(item.PushDate)}
-                    </Text>
-                </View>
-                <Text style={[styles.pushTitle]} numberOfLines={1}>
-                    {item.PushDetail}
-                </Text>
+                </View>}
             </View>
         )
+    }
+
+    const deleteListButton = async () => {
+        if(deleteList) {
+            setDeleteList(false);
+            await deletePushList();
+        }
+        else {
+            setDeleteList(true);
+        }
+    }
+
+    const deletePushList = async () => {
+        console.log('deletePushList')
+        let keys = Object.keys(isChecked);
+        let values = Object.values(isChecked);
+        let delPushUID = [];
+        if(keys[0]) {
+            for(let index = 0; index < keys.length; index++) {
+                if(values[index]) delPushUID.push(keys[index])
+            }
+            if(delPushUID[0]) {
+                console.log('delPushUID')
+                let result = await axios({
+                    url: serverURL + 'index/push',
+                    method: 'delete',
+                    params: {
+                        PushUID: delPushUID,
+                        MemberID: id
+                    }
+                });
+                console.log(result.data)
+                resetList();
+            }
+        }
+    }
+
+    const resetList = () => {
+        setIsChecked({});
+        setPushList();
+        getPushList();
     }
 
     return (
@@ -72,6 +150,8 @@ const Push = ({navigation}) => {
                 <HeaderPopup 
                     navigation={navigation}
                     title='알림 내역'
+                    push={true}
+                    deleteListButton={() => deleteListButton()}
                 />
                 <FlatList
                     style={styles.pushListView}
@@ -118,7 +198,8 @@ const styles = StyleSheet.create({
     contentArea:{
         marginTop:5,
         flexWrap: "wrap",
-        flex:1,
+        // flex:1,
+        width: '100%',
         height:65,
         padding: 7,
         paddingLeft:20,
@@ -135,6 +216,20 @@ const styles = StyleSheet.create({
         marginLeft:5,
         position:"absolute",
         right:20
+    },
+    deleteBox: {
+        width: 15, 
+        height: 15, 
+        borderRadius:0, 
+        borderColor: '#B7B7B7', 
+        // justifyContent: 'center',
+        position: 'absolute',
+        left: -8,
+        top: 15
+    },
+    checkImgStyle: {
+        width: 11,
+        height: 11
     }
 });
 

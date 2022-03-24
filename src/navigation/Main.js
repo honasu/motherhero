@@ -174,23 +174,23 @@ const Main = ({ navigation }) => {
     async function autoLogin() {
         let autoUID = await AsyncStorage.getItem('uid');
         let autoID = await AsyncStorage.getItem('id');
-        let result = await axios({
-            url: serverURL + 'user/userInfo',
-            method: 'get',
-            params: {
-                MemberID: autoID
-            }
-        })
-        let extra = result.data.info;
-        if(autoUID) {
-            dispatch({
-            type: 'SET_UID',
-            uid: autoUID,
-            id: autoID,
-            extra: extra
+        if(autoUID && autoID) {
+            let result = await axios({
+                url: serverURL + 'user/userInfo',
+                method: 'get',
+                params: {
+                    MemberID: autoID
+                }
             })
-        }
-        else {
+            let extra = result.data.info;
+            if(extra && extra.IsResignUp == 0) {
+                dispatch({
+                type: 'SET_UID',
+                uid: autoUID,
+                id: autoID,
+                extra: extra
+                })
+            }
         }
     }
 
@@ -230,7 +230,7 @@ const Main = ({ navigation }) => {
         },
         {
             uid: '5',
-            page: 'MotherList',
+            page: 'Mother',
             text: '슬기로운\n엄마생활',
             img: require('../assets/images/icons/main5.png')
         },
@@ -315,7 +315,7 @@ const Main = ({ navigation }) => {
                                         {moveAgePageInfo.first.text}
                                     </Text>
                                     <Text style={[styles.applyText]}>
-                                        신청하기
+                                        지원사업 신청하기
                                     </Text>
                                     <Image source={require('./../assets/images/icons/rightCircle.png')} style={[styles.applyImg]}/>
                                 </View>
@@ -333,7 +333,7 @@ const Main = ({ navigation }) => {
                                         {moveAgePageInfo.second.text}
                                     </Text>
                                     <Text style={[styles.applyText]}>
-                                        신청하기
+                                        지원사업 신청하기
                                     </Text>
                                     <Image source={require('./../assets/images/icons/rightCircle.png')} style={styles.applyImg}/>
                                 </View>
@@ -351,9 +351,11 @@ const Main = ({ navigation }) => {
                     </View>
                     <View  style={styles.footer}>
                         <View style={styles.footerFirst}>
-                            <View style={styles.footerImgView}>
+                            <TouchableOpacity style={styles.footerImgView}
+                                onPress={() => Linking.openURL('http://fpf.or.kr')}
+                            >
                                 <Image source={require('./../assets/images/icons/footerLogo.png')} style={styles.footerImg}/>
-                            </View>
+                            </TouchableOpacity>
                             
                             <View style={styles.footerTextView}>
                                 <Text style={styles.footerText}>
@@ -366,7 +368,7 @@ const Main = ({ navigation }) => {
                         </View>
                         <View style={styles.footerSecond}>
                             <Text style={styles.footerText}>
-                                 대한사회복지회 문의 : 1577-5155
+                                 대한사회복지회 문의 : 1577-5115
                             </Text>
                         </View>
                     </View>

@@ -7,31 +7,28 @@ import axios from 'axios';
 
 import HeaderSub from '../components/HeaderSub';
 import Button from '../components/Button';
-import ImageButton from './../components/ImageButton';
 import Popup from '../components/Popup'
-import { serverURL } from './../../config.json';
-import { Context } from './../context/index';
+import ImageButton from '../components/ImageButton';
+import { serverURL } from '../../config.json';
+import { Context } from '../context/index';
 
 
-
-const QNAList = ({route, navigation}) => {
-
+const MyBoardList = ({route, navigation}) => {
     const isFocused = useIsFocused();
     const modalText = `로그인 후 이용하실 수 있습니다
 로그인 하시겠습니까?`;
     const { state: { uid, id }, dispatch } = useContext( Context );
 
-    const [pageName, setPageName] = useState(route.params.pageName);
     const [isPopup, setIsPopup] = useState(false);
-    const [selectItem, setSelectItem] = useState(0);
+    const [listData, setListData] = useState([]);
+    const [MainCategory, setMainCategory] = useState(route.params.MainCategory);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
 
-    const [QNAListData, setQNAListData] = useState([]);
 
     useEffect(() => {
-        QNAListData[0] ? '' : getList();
-    }, [QNAListData])
+        listData[0] ? '' : getList();
+    }, [listData])
 
     useEffect(() => {
         if(route) {
@@ -53,16 +50,14 @@ const QNAList = ({route, navigation}) => {
             params: {
                 page: page+1,
                 limit: 20,
-                BoardType: 'QNA',
-                MainCategory: 'question',
-                id: id
+                MemberID: id,
             }
         });
         const data = result.data;
         if(data.info[0]) {
             setPage(page+1);
             if(data.status == 200) {
-                setQNAListData([...QNAListData, ...data.info]);
+                setListData([...listData, ...data.info]);
             }
             setLoading(false);
         }
@@ -72,12 +67,10 @@ const QNAList = ({route, navigation}) => {
         return (
             <TouchableOpacity 
                 style={styles.listContent} 
-                onPress={() => navigation.navigate('QNADetail', {
-                    BoardUID : item.BoardUID,
-                    headerTitle: '질문 게시판'
-            })}>
+                onPress={() => goDetail(item.MainCategory, item.BoardUID)}
+            >
                 <Text style={styles.listTitle}>
-                    {item.BoardTitle}
+                    {parseBoardType(item.MainCategory)}{item.BoardTitle}
                 </Text>
                 <View style={styles.listWriteInfo}>
                     <Text style={styles.listWriter}>
@@ -91,6 +84,60 @@ const QNAList = ({route, navigation}) => {
         )
     }
 
+    const goDetail = (boardType, boardUID) => {        
+        switch(boardType) {
+            case 'apply':
+                navigation.navigate('ReviewDetail', {
+                    BoardUID : boardUID,
+                    headerTitle: '지원 후기'
+                });
+                break;
+            case 'use':
+                navigation.navigate('ReviewDetail', {
+                    BoardUID : boardUID,
+                    headerTitle: 'APP 사용 후기'
+                });
+                break;
+            case 'market':
+                navigation.navigate('MotherDetail', {
+                    BoardUID : boardUID,
+                    headerTitle: '나눔 마켓'
+                });
+                break;
+            case 'info':
+                navigation.navigate('MotherDetail', {
+                    BoardUID : boardUID,
+                    headerTitle: '유용한 정보'
+                });
+                break;
+            case 'question':
+                navigation.navigate('QNADetail', {
+                    BoardUID : boardUID,
+                    headerTitle: '질문 게시판'
+                });
+                break;
+            default:
+                return '';
+        }
+    }
+
+    const parseBoardType = (boardType) => {
+        switch(boardType) {
+            case 'apply':
+                return '[지원 후기] ';
+            case 'use':
+                return '[APP 사용 후기] ';
+            case 'market':
+                return '[나눔 마켓] ';
+            case 'info':
+                return '[유용한 정보] ';
+            case 'question':
+                return '[질문 게시판] ';
+            default:
+                return '';
+        }
+    }
+
     const parseDate = (boardDate) => {
         boardDate = new Date(boardDate);
         let onlyDate = `${boardDate.getFullYear()}.${(boardDate.getMonth()+1) < 10 ? '0' : '' }${(boardDate.getMonth()+1)}.${boardDate.getDate() < 10 ? '0' : ''}${boardDate.getDate()}`;
@@ -102,12 +149,6 @@ const QNAList = ({route, navigation}) => {
         const today = `${year}.${month >= 10 ? month : '0' + month}.${date >= 10 ? date : '0' + date}`;
         return onlyDate == today ? onlyTime : onlyDate;
     }
-    
-    const moveWritePage = () => {
-        id ? navigation.navigate('QNAWrite', {
-            MainCategory: 'question'
-        }) : setIsPopup(true)
-    }
 
     const moveLoginPage = () => {
         setIsPopup(false);
@@ -117,7 +158,7 @@ const QNAList = ({route, navigation}) => {
     const resetPageData = (value) => {
         setPage(0); 
         setLoading(false); 
-        setQNAListData([]); 
+        setListData([]); 
     }
     
     return (
@@ -129,19 +170,14 @@ const QNAList = ({route, navigation}) => {
                     modalText={modalText}
                     onPressOK={() => moveLoginPage()}
                 />
-                <ImageButton 
-                    image={require('./../assets/images/icons/writeBoard.png')}
-                    styles={[styles.writeButton]} 
-                    onPress={moveWritePage}
-                />
                 <HeaderSub
                     page='normal'
                     navigation={navigation}
-                    title={pageName}
+                    title={'내가 쓴 글'}
                 />
                 <FlatList
                     style={styles.Content}
-                    data={QNAListData}
+                    data={listData}
                     renderItem={renderItem}
                     keyExtractor={item => item.BoardUID}
                     onEndReached={getList}
@@ -149,7 +185,7 @@ const QNAList = ({route, navigation}) => {
             </View>
         </SafeAreaView>
     );
-}
+}   
 
 const styles = StyleSheet.create({
     SafeAreaView:{
@@ -217,4 +253,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default QNAList;
+export default MyBoardList;

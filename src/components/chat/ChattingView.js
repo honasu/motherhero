@@ -95,7 +95,8 @@ const styles = StyleSheet.create({
         marginTop:-10,
         padding:15,
         paddingBottom: 0,
-        marginBottom:40,
+        // marginBottom:40,
+        paddingBottom: 70,
         backgroundColor: '#F9FFEB'
     },
     ChatItemLeft:{

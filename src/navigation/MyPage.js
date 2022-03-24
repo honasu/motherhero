@@ -17,7 +17,7 @@ const MyPage = ({navigation}) => {
                     <View style={[styles.profileContent]}>
                         <TouchableOpacity
                             onPress={() => {
-                                navigation.navigate('ProfileUpdate')
+                                navigation.navigate('MyInfoDetail')
                             }}
                         >
                             <ImageBackground source={{uri: serverURL + extra.ProfilePath}} style={styles.userImage} imageStyle={styles.userImageStyle}>
@@ -61,14 +61,14 @@ const MyPage = ({navigation}) => {
                             </TouchableOpacity>
                             <TouchableOpacity 
                                 style={[styles.mypageContent]}
-                                onPress={() => navigation.navigate('Review', {})}
+                                onPress={() => navigation.navigate('MyBoardList', {})}
                             >
                                 <Image
                                     source={require('../assets/images/icons/review_mypage.png')}
                                     style={styles.mypageContentImage}
                                 />
                                 <Text style={styles.mypageContentText}>
-                                    지원 후기
+                                    내가 쓴 글
                                 </Text>
                             </TouchableOpacity>
                         </View>

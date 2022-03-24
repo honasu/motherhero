@@ -71,6 +71,7 @@ const ReviewList = ({route, navigation}) => {
                 style={styles.listContent} 
                 onPress={() => navigation.navigate('ReviewDetail', {
                     BoardUID : item.BoardUID,
+                    headerTitle: MainCategory == 'apply' ? '지원 후기' : 'APP 사용 후기'
             })}>
                 <Text style={styles.listTitle}>
                     {item.BoardTitle}

@@ -1,11 +1,12 @@
 import React, {useState}  from 'react';
-import { TouchableOpacity, Text, StyleSheet} from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 
 const CheckBox = (props) => {
     return (
         <TouchableOpacity style={{ flexDirection: 'row', }} onPress = { () => { props.isChecked ? props.onChange(false) : props.onChange(true); }}>
             <TouchableOpacity style={[styles.TouchableOpacity, props.styles, (props.isChecked)?props.checkedViewStyle:{}]} onPress = { () => { props.isChecked ? props.onChange(false) : props.onChange(true); }}>
-                <Text style={[styles.checkText, props.checkTextStyle, (props.isChecked)?{display:"flex"}:{display:"none"}]}>V</Text>
+                <Image source={props.checkColor=='black' ? require('./../assets/images/icons/black_check.png') : require('./../assets/images/icons/white_check.png')} 
+                style={[props.checkImgStyle, (props.isChecked)?{display:"flex"}:{display:"none"}]}/>
             </TouchableOpacity>
             {props.children}
         </TouchableOpacity>
@@ -23,9 +24,6 @@ const styles = StyleSheet.create({
     alignItems:'center',
     marginRight: 5,
   },
-  checkText: {
-      fontSize: 13
-  }
 });
 
 export default CheckBox;

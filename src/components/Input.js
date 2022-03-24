@@ -12,6 +12,11 @@ const Input = (props) => {
                 placeholderTextColor = "#AAAAAA"
                 value={props.value}
                 onChangeText={props.onChangeText}
+                onSubmitEditting={props.onSubmitEditting}
+                onEndEditing={props.onEndEditing}
+                returnKeyType={props.returnKeyType}
+                multiline={props.multiline}
+                blurOnSubmit={props.blurOnSubmit}
             />
         </View>
     );    

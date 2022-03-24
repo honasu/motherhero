@@ -44,10 +44,27 @@ const Notice = ({route, navigation}) => {
         }
     }
 
+    const parseDate = (boardDate) => {
+        boardDate = new Date(boardDate);
+        let onlyDate = `${boardDate.getFullYear()}.${(boardDate.getMonth()+1) < 10 ? '0' : '' }${(boardDate.getMonth()+1)}.${boardDate.getDate() < 10 ? '0' : ''}${boardDate.getDate()}`;
+        let onlyTime = `${(boardDate.getHours()) < 10 ? '0' : '' }${boardDate.getHours()}:${(boardDate.getMinutes()) < 10 ? '0' : '' }${boardDate.getMinutes()}:${boardDate.getSeconds() < 10 ? '0' : ''}${boardDate.getSeconds()}`;
+        const d = new Date();
+        const year = d.getFullYear(); 
+        const month = d.getMonth() + 1; 
+        const date = d.getDate(); 
+        const today = `${year}.${month >= 10 ? month : '0' + month}.${date >= 10 ? date : '0' + date}`;
+        return onlyDate == today ? onlyTime : onlyDate;
+    }
+
     const renderHeader = (section) => {
         return (
         <View style={[styles.Header, styles.Row]}>
-            <Text style={[styles.headerText]}>{section.BoardTitle}</Text>
+            <View style={styles.headerView}>
+                <Text style={[styles.headerText]}>{section.BoardTitle}</Text>
+                <Text style={styles.listDate}>
+                    {parseDate(section.BoardDate)}
+                </Text>
+            </View>
             <Image style={[styles.HeaderArrow,]} source={(section.BoardUID == activeSections?require('./../assets/images/icons/up-arrow.png'):require('./../assets/images/icons/down-arrow.png'))}/>
         </View>
         );
@@ -119,8 +136,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         paddingTop: 15,
         paddingBottom: 15,
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft: 15,
+        paddingRight: 50,
     },
     Shadow: { 
         ...Platform.select({ 
@@ -139,12 +156,20 @@ const styles = StyleSheet.create({
             }, 
         }), 
     },
+    headerView: {
+    },
+    listDate: {
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        color: '#AAAAAA',
+        fontSize: 14,
+    },
     headerText: {
         includeFontPadding:false,
         fontFamily:'NotoSansKR-Regular',
         color: '#191919',
         fontSize: 15,
-        paddingLeft: 12
+        marginBottom: 5
     },
     HeaderArrow:{
         width:20,

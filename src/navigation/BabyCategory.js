@@ -34,7 +34,7 @@ const BabyCategory = ({navigation}) => {
                 <TouchableOpacity 
                     activeOpacity={0.8} 
                     style={[styles.applyButton]} 
-                    onPress={ () => navigation.navigate('BabyInfo', {
+                    onPress={ () => navigation.navigate('BabyInfoList', {
                         type: value.uid,
                         text: value.name,
                     })}

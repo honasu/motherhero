@@ -17,7 +17,7 @@ const MotherDetail = ({route, navigation}) => {
 
     let MemberID = id;
     let url = webURL + 'writeBoard.html';
-    let MainCategory = (route.params.selectItem == 1) ? 'market' : 'info';
+    let MainCategory = route.params.MainCategory;
 
     let webviewRef = useRef();
 

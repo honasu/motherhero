@@ -12,14 +12,13 @@ const Header = (props) => {
       require('./../assets/images/icons/alram.png'),
       require('./../assets/images/icons/mypage.png'),
       require('./../assets/images/icons/menu.png'),
-      require('./../assets/images/icons/mainLeftLogo1.png'),
       require('./../assets/images/icons/mainLeftLogo2.png'),
   ]
 
   return (
       <View style={[styles.View, styles.Shadow]}>
         <View style={[styles.imgView, {width:130, height:50}]}>
-          <ImageButton
+          {/* <ImageButton
               image={iconList[5]}
               styles={[styles.HeaderLeftLogo1]}
               // onPress={() => props.navigation.navigate('Push')}
@@ -28,6 +27,11 @@ const Header = (props) => {
               image={iconList[6]}
               styles={[styles.HeaderLeftLogo2]}
               // onPress={() => props.navigation.navigate('Push')}
+          /> */}
+          <ImageButton
+              image={iconList[4]}
+              styles={[styles.HeaderButton, styles.icon, {marginLeft: 5}]}
+              onPress={() => props.navigation.openDrawer()}
           />
         </View>
         <ImageButton
@@ -45,11 +49,6 @@ const Header = (props) => {
                 image={iconList[3]}
                 styles={[styles.HeaderButton, styles.icon]}
                 onPress={() => userId ? props.navigation.navigate('MyPage') : props.navigation.navigate('Login')}
-            />
-            <ImageButton
-                image={iconList[4]}
-                styles={[styles.HeaderButton, styles.icon]}
-                onPress={() => props.navigation.openDrawer()}
             />
         </View>
       </View>

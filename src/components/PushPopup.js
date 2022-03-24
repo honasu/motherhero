@@ -15,14 +15,6 @@ const PushPopup = props => {
     const title = (pushData.notification) ? pushData.notification.title : null;
     const body = (pushData.notification) ? pushData.notification.body : null;
     
-    console.log('PushPopup s')
-    console.log(pushData)
-    console.log(title)
-    console.log(body)
-    console.log(pushData.notification)
-    console.log(pushData.notification ? 1 : 2)
-    console.log('PushPopup f')
-
     return (
         (
             <View style={pushData.notification ? [styles.modal, styles.Shadow] : null} >

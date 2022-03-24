@@ -11,7 +11,7 @@ import Selector from '../components/Selector';
 import { Context } from './../context/index';
 import { serverURL, webURL } from './../../config.json';
 
-const BabyInfo = ({route, navigation}) => {
+const BabyInfoList = ({route, navigation}) => {
     const { state: { uid, id }, dispatch } = useContext( Context );
 
     let MemberID = id;
@@ -203,4 +203,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default BabyInfo;
+export default BabyInfoList;

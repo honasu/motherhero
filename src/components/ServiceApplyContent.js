@@ -3,7 +3,6 @@ import React, {useState, useEffect} from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Linking } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
-import CheckBox from './CheckBox';
 import ImageButton from './ImageButton';
 import Button from './Button';
 
@@ -130,7 +129,7 @@ const ServiceApplyContent = (props) => {
                             styles={{height:200}}
                             onPress={() => Linking.openURL(googleForm)}
                             TextStyle={styles.text}
-                            title='구글 폼 링크 클릭'
+                            title='신청서 작성 클릭'
                         />
                     </View>
                 );
@@ -242,8 +241,8 @@ const styles = StyleSheet.create({
         paddingLeft: 14,
         paddingRight: 14,
         includeFontPadding:false,
-        fontFamily:'NotoSansKR-Regular',
-        fontSize: 20,
+        fontFamily:'NotoSansKR-Medium',
+        fontSize: 22,
         color:'#191919',
     },
     joinProfileImg: {

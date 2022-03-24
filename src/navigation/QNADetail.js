@@ -17,6 +17,7 @@ const QNADetail = ({route, navigation}) => {
     let MemberID = id;
     let url = webURL + 'listBoard.html';
     let [BoardUID, setBoardUID] = useState(route.params.BoardUID);
+    let [headerTitle, setHeaderTitle] = useState(route.params.headerTitle);
 
     let webviewRef = useRef();
 
@@ -67,6 +68,7 @@ const QNADetail = ({route, navigation}) => {
             <View style={styles.ContentView}>
                 <HeaderPopup
                     navigation={navigation}
+                    title={headerTitle}
                 />
                 <WebView 
                     // ref={}
