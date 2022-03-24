@@ -1,122 +1,113 @@
 import * as React from 'react';
 import { useState, useEffect, useContext, useRef } from 'react';
-import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { WebView } from 'react-native-webview';
+import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 
 import HeaderSub from '../components/HeaderSub';
-import Selector from '../components/Selector';
+import Button from './../components/Button';
+import ImageButton from './../components/ImageButton';
 
 import { Context } from './../context/index';
 import { serverURL, webURL } from './../../config.json';
 
 const BabyInfoList = ({route, navigation}) => {
+    const isFocused = useIsFocused();
     const { state: { uid, id }, dispatch } = useContext( Context );
 
-    let MemberID = id;
-    let url = webURL + 'listBoard.html';
     const [headerInfo, setHeaderInfo] = useState(route.params); //type, text
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [babyList, setBabyList] = useState([]);
+
+
     const [selectorList, setSelectorList] = useState();
     const [selectItem, setSelectItem] = useState();
     const [urlList, setUrlList] = useState();
     const [activeSections, setActiveSections] = useState();
 
     useEffect(() => {
-        selectorList ? '' : getSelectorList();
-    }, [selectorList, headerInfo, selectItem])
+        babyList[0] ? '' : getList();
+    }, [babyList, headerInfo])
 
-    let webviewRef = useRef();
-
-    /** 웹뷰 ref */
-    const handleSetRef = _ref => {
-      webviewRef = _ref;
-    };
-
-    const reload = () => {
-        webviewRef.reload();
-    }
-
-    const handleOnMessage = (message) => {
-        console.log('handleOnMessage');
-        const { nativeEvent } = message;
-        const data = JSON.parse(nativeEvent.data);
-        if(data.type == 'fin') {
-            navigation.goBack();      
-        }
-    };
-
-    const handleEndLoading = e => {
-        console.log("handleEndLoading");
-        /** rn에서 웹뷰로 정보를 보내는 메소드 */
-        webviewRef.postMessage( JSON.stringify({
-            type: "pageInfo",
-            data: {
-                MemberID: MemberID,
-                BoardUID: urlList[selectItem],
-                BoardType: 'baby'
+    useEffect(() => {
+        if(route) {
+            if(route.params) {
+                if(route.params.reset) {
+                    resetPageData();
+                }
             }
-        }));
-    };
-    const getSelectorList = async () => {
+        }
+    }, [isFocused])
+
+    const getList = async () => {
+        if(loading) return;
+        setLoading(true);
 
         const result = await axios({
             url: serverURL + 'index/board',
             method: 'get',
             params: {
-                page:1,
-                limit:100,
+                page: page+1,
+                limit: 20,
                 SubCategoryUID: headerInfo.type
             }
         });
         const data = result.data;
         if(data.info[0]) {
-            const name = data.info.map(value => value.BoardTitle);
-            const url = data.info.map(value => value.BoardUID);
-            setSelectorList(name);
-            setUrlList(url);
-            setSelectItem(0);
+            setPage(page+1);
+            if(data.status == 200) {
+                setBabyList([...babyList, ...data.info]);
+            }
+            setLoading(false);
         }
     }
 
-    const appendWebView = () => {
-        return <WebView 
-        // ref={}
-        source={{ uri: url }} 
-        ref={handleSetRef}
-        incognito={true} //캐시 비우기
-        javaScriptEnabled={true}
-        onLoadEnd={handleEndLoading}
-        onMessage={handleOnMessage}
-        />
-        
-    }
-
-    const onSelect = (value) => {
-        setSelectItem(value);
-
-        webviewRef.postMessage( JSON.stringify({
-            type: "pageInfo",
-            data: {
-                MemberID: MemberID,
-                BoardUID: urlList[selectItem],
-                BoardType: 'baby'
-            }
-        }));
-    }
-
-    const appendSelector = () => {
+    const renderItem = ({item}) => {
         return (
-            <View style={styles.selectorView}>
-                <Selector
-                    data={selectorList}
-                    defaultValueByIndex="0"
-                    onSelect={(value) => {onSelect(value);}}
-                    SelectAreaStyle={styles.SelectAreaStyle}
-                />
-            </View>
-            
-        );
+            <TouchableOpacity 
+                style={styles.listContent} 
+                onPress={() => navigation.navigate('BabyDetail', {
+                    headerTitle: headerInfo.text,
+                    BoardUID: item.BoardUID,
+            })}>
+                <Text style={styles.listTitle}>
+                    {item.BoardTitle}
+                </Text>
+                <View style={styles.listWriteInfo}>
+                    <Text style={styles.listWriter}>
+                        {item.NickName}
+                    </Text>
+                    <Text style={styles.listDate}>
+                        {parseDate(item.BoardDate)}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    const parseDate = (boardDate) => {
+        boardDate = new Date(boardDate);
+        let onlyDate = `${boardDate.getFullYear()}.${(boardDate.getMonth()+1) < 10 ? '0' : '' }${(boardDate.getMonth()+1)}.${boardDate.getDate() < 10 ? '0' : ''}${boardDate.getDate()}`;
+        let onlyTime = `${(boardDate.getHours()) < 10 ? '0' : '' }${boardDate.getHours()}:${(boardDate.getMinutes()) < 10 ? '0' : '' }${boardDate.getMinutes()}:${boardDate.getSeconds() < 10 ? '0' : ''}${boardDate.getSeconds()}`;
+        const d = new Date();
+        const year = d.getFullYear(); 
+        const month = d.getMonth() + 1; 
+        const date = d.getDate(); 
+        const today = `${year}.${month >= 10 ? month : '0' + month}.${date >= 10 ? date : '0' + date}`;
+        return onlyDate == today ? onlyTime : onlyDate;
+    }
+    
+    const moveLoginPage = () => {
+        setIsPopup(false);
+        navigation.navigate('Login', {});
+    }
+
+    const resetPageData = (value) => {
+        setPage(0); 
+        setLoading(false); 
+        setBabyList([]); 
     }
 
     return (
@@ -127,8 +118,13 @@ const BabyInfoList = ({route, navigation}) => {
                     navigation={navigation}
                     title={headerInfo ? headerInfo.text : ''}
                 />
-                {selectorList ? appendSelector() : <View></View>}
-                {urlList ? appendWebView() : <View></View>}
+                <FlatList
+                    style={styles.Content}
+                    data={babyList}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.BoardUID}
+                    onEndReached={getList}
+                />  
             </View>
         </SafeAreaView>
     );
@@ -160,46 +156,50 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         borderBottomColor:'#9e9e9e'
     },
-    ActiveHeader:{
-        paddingLeft:0,
-        paddingRight:0,
-        marginLeft:10,
-        marginRight:10
-    },
-    headerText: {
-        fontSize: 14,
-        fontWeight: '500',
-        paddingLeft: 12
-    },
-    HeaderArrow:{
-        width:20,
-        height:20,
-        position:'absolute',
-        top:15,
-        right:22
-    },
-    Item: {
-        borderBottomColor:'#9e9e9e',
-        borderBottomWidth:1,
-        paddingTop: 10,
-        paddingBottom: 10,
+    listContent: {
+        marginTop:5,
+        flexWrap: "wrap",
+        flex:1,
+        height:65,
+        padding: 7,
         paddingLeft:20,
         paddingRight:20,
-        backgroundColor: 'white',
+        position:'relative',
+        borderBottomColor: '#DCDCDC',
+        borderBottomWidth: 1,
     },
-    selectorView: {
-        marginTop: 70,
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingRight: 20,
-        paddingLeft: 20,
-        backgroundColor: '#F9FFEB',
+    ContentView: {
+        flex: 1
     },
-    SelectAreaStyle: {
-        // flex: 1,
-        backgroundColor: '#FFFFFF',
-        width: '100%',
-        height: 30,
+    listTitle: {
+        flex:1,
+        width:'100%',
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 15,
+        color:'#191919',
+        marginTop:2,
+    },
+    listWriteInfo: {
+        flexDirection: 'row',
+        justifyContent:'space-between',
+    },
+    listWriter: {
+        flex:1,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        color:'#AAAAAA',
+        marginTop:2,
+    },
+    listDate: {
+        flex:1,
+        includeFontPadding:false,
+        fontFamily:'NotoSansKR-Regular',
+        fontSize: 13,
+        marginTop:2,
+        color:'#AAAAAA',
+        textAlign: 'right',
     }
 });
 
